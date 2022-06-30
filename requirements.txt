@@ -1,0 +1,8 @@
+django-admin-interface
+django 
+pillow
+django_crispy_forms
+crispy-forms-materialize
+mysqlclient
+pymysql
+djangorestframework

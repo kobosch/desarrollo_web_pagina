@@ -1,0 +1,490 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Indie Flower', cursive;
+}
+a{
+    color:black!important;
+}
+
+body{
+   
+    /*background-size: 1000%; background-image: linear-gradient(135deg, #00B7D4, #505488, #2F3F80, #161569, #5A4894, #A950A1, #FF7CAE);
+    */
+    background-color: #d37d1b;
+    animation: fanimado 10s infinite;
+}
+/*------------NUEVO INDEX-----------*/
+
+.contenedor{
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.bg_animate{
+    width: 100%;
+    height: 200vh;
+    background-image: linear-gradient(135deg, #00B7D4, #505488, #2F3F80, #161569, #5A4894, #A950A1, #FF7CAE);
+    background-size: 100%;
+    animation: fanimado 10s infinite;
+}
+
+.div-historial {
+    background-color: #d37d1b;
+    width: 85%;
+    margin: auto;
+    margin-top: 10px;
+    height: 220px;
+    border-radius: 10px;
+    border: solid 1px red;
+}
+
+.div-historial .left {
+    float: left;
+    width: 20%;
+    background-color: white;
+    margin-left: 20px;
+    height: 180px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.first {
+    margin-top: 30px!important;
+}
+
+.div-historial .right {
+    color: white;
+    float: right;
+    margin: auto;
+    width: 76%;
+    margin-top: 30px;
+}
+
+.container-historial {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+@media only screen and (max-width: 828px) {
+    .div-historial .left {
+        float: unset;
+        width: inherit;
+        background-color: white;
+        margin-left: 20px;
+        height: 180px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        margin: auto;
+        margin-top: 25px;
+    }
+    .div-historial .right {
+        color: white;
+        float: initial;
+        margin: auto;
+        width: 76%;
+        margin-top: 30px;
+    }
+    .div-historial {
+        height: 424px;
+    }
+}
+
+@media only screen and (max-width: 434px) {
+    .div-historial {
+        height: 448px;
+    }
+}
+
+.timeline-with-icons {
+    border-left: 1px solid hsl(0, 0%, 90%);
+    position: relative;
+    list-style: none;
+}
+
+.timeline-with-icons .timeline-item {
+    position: relative;
+}
+
+.timeline-with-icons .timeline-item:after {
+    position: absolute;
+    display: block;
+    top: 0;
+}
+
+.timeline-with-icons .timeline-icon {
+    position: absolute;
+    left: -48px;
+    background-color: hsl(217, 88.2%, 90%);
+    color: hsl(217, 88.8%, 35.1%);
+    border-radius: 50%;
+    height: 31px;
+    width: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes fanimado{
+    0%{
+        background-position: 0% 50%;  
+    }
+    50%{
+        background-position: 100% 50%;  
+    }
+    100%{
+        background-position: 0% 50%;  
+    }
+}
+
+.header_nav{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.header_nav .contenedor{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.header_nav h1{
+    color: #fff;
+    font-family: 'Gagalin';
+}
+
+.header_nav nav a{
+    color: #fff;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.banner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.banner_title h2{
+    color: #fff;
+    font-size: 55px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-family: 'Indie Flower', cursive;
+ 
+}
+
+.banner_title .login{
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none;
+    display: inline-block;
+    padding: 20px;
+}
+
+.banner_title .sus{
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none;
+    display: inline-block;
+    padding: 20px;
+    border-radius: 45px;
+}
+
+.banner_img{
+    animation: movimiento 2.5s linear infinite;
+}
+
+.banner_img img{
+    width: 600px;
+    display: block;
+}
+
+/* burbujas */
+
+@keyframes movimiento{
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(30px);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
+
+
+
+/*BTN*/
+.btn{
+    border: 3px solid rgba(100, 100, 100, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+    width: 250px;
+    font-family: 'Indie Flower', cursive;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    background-size: 300%;
+    transition: 0.6s;
+
+}
+
+
+
+.btn:hover{
+background-position: right;
+}
+
+.btn-deep-orange {
+    color: #fff;
+    background-image: linear-gradient(to left, #FF5733, #881857, #FF5733);
+    
+}
+
+.btn-deep-orange:hover {
+    color: #fff;
+    background-image: linear-gradient(to left, #FF5733, #881857, #FF5733);
+}
+
+.btn-s{
+    
+    color: #fff;
+    background-image: linear-gradient(to left, #FF5733, #881857, #FF5733);
+}
+
+.btn_ofertas{
+    text-align: center;
+    width: 100px;
+    height: 21px;
+    background-color: rgb(247, 75, 75);
+    margin-left: 70px;
+    border-radius: 5px;
+}
+
+/*FIN BTN*/
+
+.modal-text p{
+
+    color: #7a7a7a;
+}
+
+.modal-text a{
+    text-decoration: none;
+    padding: 0 10px;
+}
+
+.iniciar-con{
+    justify-content: center;
+    display: flex;
+    justify-content: center;
+}
+
+.iniciar-con a{
+ text-decoration: none;
+ color: #7a7a7a;
+ padding: 5px;
+}
+
+.iniciar-con a i{
+    text-decoration: none;
+   }
+
+:root{
+    --color-esqueleto:#EFF3F5;
+}
+
+.nav-link:hover {
+    background-color: white;
+    color: black!important;
+}
+
+header{
+    width: 100%;
+    height: 60px;
+    background: var(--color-esqueleto);
+}
+
+.cover{
+    width: 100%;
+    height: 500px;
+    background: var(--color-esqueleto);
+    margin-top: 20px;
+}
+
+.container-fluid li a{
+margin-left: 8px;  /*separa las etiquetas*/
+}
+
+.navbar:hover ul li a{
+transform: scale(1.07);
+}
+
+.navbar:hover ul li a img{
+    transition: all 300ms;
+    }
+
+.container_descuento{
+    text-align: center;
+    width: 100%;
+}
+
+.container_informacion  h4{
+    padding: 20px;
+}
+
+.container_informacion  p{
+    padding: 20px;
+    background-color: peru;
+    border-radius: 50px;
+    color: black;
+}
+
+
+
+.container__row{
+    max-width: 200%;
+}
+
+.container__article{
+    max-width: 1000px;
+    padding: 0px 20px;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+.container__article .box__article{
+    width: 200px;
+    height: 250px;
+    background: var(--color-esqueleto);
+    margin: 20px;
+}
+
+.container__row h3{
+    padding: 50px;
+}
+
+.container__row h1{
+    color: wheat;
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+footer{
+    width: 100%;
+   /* padding: 50px 0px;*/
+    background-image: url(../Images/background-footer.svg);
+    background-size: cover;
+    text-decoration: none;
+    margin-top: 100px;
+}
+
+.container__footer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+   /* margin-top: 100px;*/
+    align-items: center;
+    text-decoration: none;
+}
+
+.container__row p{
+    color: white;
+}
+
+
+.text_productos h1{
+    text-align: center;
+    color: #EFF3F5;
+}
+.box__footer{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.box__footer a{
+
+    text-decoration: none;
+}
+
+.box__footer .logo img{
+    width: 180px;
+    text-decoration: none;
+}
+
+.box__footer .terms{
+    max-width: 350px;
+    margin-top: 20px;
+    font-weight: 500;
+    color: mintcream;
+    font-size: 18px;
+}
+
+.box__footer h2{
+    margin-bottom: 30px;
+    color: black;
+    font-weight: 700;
+}
+
+.box__footer a{
+    margin-top: 10px;
+    color: mintcream;
+    font-weight: 600;
+}
+
+.box__footer a:hover{
+    opacity: 0.8;
+}
+
+.box__footer a .fab{
+    font-size: 20px;
+}
+
+.box__copyright{
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+    padding: 0px 40px;
+}
+
+.box__copyright p{
+    margin-top: 20px;
+    color: mintcream;
+}
+
+.box__copyright hr{
+    border: none;
+    height: 1px;
+    background-color: #7a7a7a;
+}
+
+
+
+
+

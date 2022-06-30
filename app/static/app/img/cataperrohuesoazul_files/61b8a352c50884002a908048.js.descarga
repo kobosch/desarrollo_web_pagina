@@ -1,0 +1,147 @@
+
+window.Cliengo = {}; //all Cliengo configs, functions and params goes into this object
+
+window.Cliengo.chatConfig = {
+  "companyId" : "61a771ef1393dc002af79e0f",
+  "websiteId" : "61b8a352c50884002a908048",
+  "whiteLabelId" : "55df4ed3e4b0337744bcd65a",
+  "whiteLabelName" : "",
+  "googleAdWordsConversionId" : "",
+  "googleAnalyticsId" : "",
+  "chatbotName" : "Happyto",
+
+    "phone" : "",
+  "title": "www.pethappy.cl2",
+  "businessHoursConfiguration" : {"enabled_channels":{"WHATSAPP":true,"WHATSAPP_WIDGET":false,"WHATSAPP_CHAT":false,"WEB_CHAT":false,"CHATBOT":true},"business_hours":[{"start":32400,"end":72000},{"start":118800,"end":158400},{"start":205200,"end":244800},{"start":291600,"end":331200},{"start":378000,"end":417600},{"start":464400,"end":482400}],"initial_message":"Hola, en este momento nuestros agentes no se encuentran conectados, puedes enviarnos un mensaje de lunes a viernes de 9 a 20 horas.","time_zone":"-3:00","promise_future_contact":"Muchas gracias. Un asesor se comunicará contigo a la brevedad con la información que me has pasado.","final_salutation":"Bien, me contacto con el asesor y le doy toda esta información. Muchas gracias nuevamente  por comunicarte!"},
+  "conversionPixels" : "<!-- Global site tag (gtag.js) - Google Ads: 970075179 -->\n<script async src=\"https:\/\/www.googletagmanager.com\/gtag\/js?id=AW-970075179\"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'AW-970075179');\n<\/script>\n<!-- Event snippet for Chatbot Cliengo Conversion #1639592777501 conversion page -->\n<script>\n  gtag('event', 'conversion', {\n      'send_to': 'AW-970075179\/pfTACLD5xYoDEKvYyM4D',\n      'value': 1.0,\n      'currency': 'CLP'\n  });\n<\/script>\n",
+  "customFeedbackImageUrl" : "",
+  "widgetIcon" : "CLIENGO_ORIGINAL",
+   "widgetStyle" : "BAR",
+  "chatWindowColor" : "#5eb400",
+  "cliengoMeetings" : "false",
+  "chatWindowTitle" : "Chat de atención",
+  "chatWindowInputPlaceholder" : "Escribe un mensaje...",
+  "chatInitialMessage" : "Hola soy HAPPYTO...",
+  "chatIsWritingMessage" : " está escribiendo...",
+  "chatSaluteTimeInSeconds" : 2,
+  "avatarImgUrl": "https://res.cloudinary.com/hbrrdozyj/image/upload/w_35,f_auto,q_auto/v1639600627/cliengo_chatbot_avatar/q2biaqdjd4e8gfpa0olb.png",
+  "labs":{
+      },
+  "companyLabs": "cvanalysis,cs_chatbot_instagram,cs_chatbot_instagram,cs_chatbot_instagram, stopchat",
+  "planType": "CLIENGO_CORPORATE_ANNUAL",
+  "vertical": "HEALTH_BEAUTY",
+    "formHooksEnabled" : false,
+  "automaticRemarketingEnabled" : true,
+  "chatEnabled" : true,
+        "poweredBy":{
+          "text": "Usamos Cliengo ",
+          "link": "https://www.cliengo.com/?utm_source=usamos_cliengo&utm_medium=chat",
+          "static/app/img/":  "https://res.cloudinary.com/hbrrdozyj/image/upload/v1603736815/Usamos-Cliengo_knac91.png"
+      },
+    "customPoweredByUtms": "",
+  "softDisable": false,
+  "hasConvertedLead" : false,   "CDN_URL_DOMAIN" : "//d47r8x2gwo1do.cloudfront.net",
+        "WS_CHATBOT_URL" : "wss://chatbot.cliengo.com",
+      "sessionPath" : "/s/61a771ef1393dc002af79e0f/61b8a352c50884002a908048",
+  "cacheVersion" : "1438-07062065",
+  "debug" : false,
+  "whatsAppActive": true,
+  "lang" : "es",
+  "widgetVersion" : "2.0"
+}
+
+
+var host = 'https://lw.cliengo.com';
+
+var mainClgoScriptId = 'mainclgo';
+var mainWspScriptId = 'mainWsp';
+var mainclgoScriptExists = document.querySelector('script[id="' + mainClgoScriptId + '"]');
+
+loadMain();
+
+function loadMain() {
+  if(mainclgoScriptExists) {
+    console.warn('Cuidado! ya existe un script con id "' + mainClgoScriptId + '", ' +
+      'probablemente el script del chat este duplicado en ese sitio!');
+  }
+
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.id = mainClgoScriptId;
+  s.src = host + '/mainclgo.bundle.js';
+  s.setAttribute('data-company-id', '61a771ef1393dc002af79e0f');
+  s.setAttribute('data-source-id', '61b8a352c50884002a908048');
+  s.setAttribute('data-host', host);
+  s.async = true;
+  document.body.appendChild(s);
+  console.debug('clgo loaded');
+
+  loadWhatsAppWidget();
+}
+
+function onCommonsLoad() {
+  console.log(commonsClgoScriptId + ' script loaded successfuly.');
+  loadMain();
+}
+
+// WhatsApp functions
+function setwhatsappConfig() {
+      window.ldkWSP = {};
+    ldkWSP.widget_color = "#075E54";
+    ldkWSP.widget_message = "Chatea con nosotros";
+    ldkWSP.conversionPixelHtml = "<!-- Global site tag (gtag.js) - Google Ads: 970075179 -->\n<script async src=\"https:\/\/www.googletagmanager.com\/gtag\/js?id=AW-970075179\"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'AW-970075179');\n<\/script>\n<!-- Event snippet for Chatbot Cliengo Conversion #1639592777501 conversion page -->\n<script>\n  gtag('event', 'conversion', {\n      'send_to': 'AW-970075179\/pfTACLD5xYoDEKvYyM4D',\n      'value': 1.0,\n      'currency': 'CLP'\n  });\n<\/script>\n";
+    ldkWSP.position = "";
+    ldkWSP.phone = "+56954089446";
+    ldkWSP.desktop_version = "EXTENDED";
+    ldkWSP.lang = "es";
+    ldkWSP.businessHoursConfiguration = {"enabled_channels":{"WHATSAPP":true,"WHATSAPP_WIDGET":false,"WHATSAPP_CHAT":false,"WEB_CHAT":false,"CHATBOT":true},"business_hours":[{"start":32400,"end":72000},{"start":118800,"end":158400},{"start":205200,"end":244800},{"start":291600,"end":331200},{"start":378000,"end":417600},{"start":464400,"end":482400}],"initial_message":"Hola, en este momento nuestros agentes no se encuentran conectados, puedes enviarnos un mensaje de lunes a viernes de 9 a 20 horas.","time_zone":"-3:00","promise_future_contact":"Muchas gracias. Un asesor se comunicará contigo a la brevedad con la información que me has pasado.","final_salutation":"Bien, me contacto con el asesor y le doy toda esta información. Muchas gracias nuevamente  por comunicarte!"},
+    ldkWSP.company_id = "61a771ef1393dc002af79e0f";
+    ldkWSP.website_id = "61b8a352c50884002a908048";
+    ldkWSP.disable_powered_by = "" === "true";
+    ldkWSP.custom_powered_by_utms = "";
+    ldkWSP.googleAnalyticsId = "";
+    ldkWSP.plan_type = "CLIENGO_CORPORATE_ANNUAL";
+    ldkWSP.website_id = "61b8a352c50884002a908048";
+    ldkWSP.show_desktop = true;
+    ldkWSP.show_mobile = true;
+    ldkWSP.labs = {
+          };
+    ldkWSP.notice = {
+    "title": "Para comunicarte con un asesor necesitamos los siguientes datos",
+    "type": "text"
+};
+    ldkWSP.name_request_message = {
+    "title": "Nombre",
+    "type": "text"
+};
+    ldkWSP.whats_app_request_message = {
+    "title": "N\u00ba de WhatsApp",
+    "type": "text"
+};
+    ldkWSP.message_request_message = {
+    "title": "Mensaje",
+    "type": "text",
+    "options": [
+        "Agendar hora",
+        "Agendar peluquer\u00eda",
+        "Compra online",
+        "Locales y telefonos"
+    ]
+};
+  }
+
+function loadWhatsAppWidget() {
+      setwhatsappConfig();
+    var wspHost = 'https://wb.cliengo.com';
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.id = mainWspScriptId;
+    s.src = wspHost + '/dist/js/mainWsp.js';
+    s.setAttribute('data-company-id', '61a771ef1393dc002af79e0f');
+    s.setAttribute('data-source-id', '61b8a352c50884002a908048');
+    s.setAttribute('data-host', wspHost);
+    s.async = true;
+    document.body.appendChild(s);
+  }
+
+

@@ -1,0 +1,30 @@
+/*
+Funciones necesarias para agregar al carro, eliminar un producto del carro o restar un producto
+*/
+$(function(){
+	$("#btnCotizacion").click(function(){
+		var nombre = $("#nombre").val();
+		var apellidos = $("#apellidos").val();
+		var telefono = $("#telefono").val();
+		var email = $("#email").val();
+		var Rut = $("#Rut").val();
+		
+		if(nombre != "" && apellidos != "" && telefono != "" && email != "" && Rut != ""){
+			if (email.indexOf('@', 0) == -1 || email.indexOf('.', 0) == -1) {
+					swal("","Ingrese un correo válido!","error");
+					$("#email").val("");
+				} else {
+					$("#formCotizacion").submit();ng
+				}
+			} else {
+				console.log("faltan campos por completar");
+				if(nombre == ""){$("#nombre").addClass("campo_vacio");} else {$("#nombre").removeClass("campo_vacio")}
+				if(apellidos == ""){$("#apellidos").addClass("campo_vacio");} else {$("#apellidos").removeClass("campo_vacio")}
+				if(telefono == ""){$("#telefono").addClass("campo_vacio");} else {$("#telefono").removeClass("campo_vacio")}
+				if(email == ""){$("#email").addClass("campo_vacio");} else {$("#email").removeClass("campo_vacio")}
+				if(Rut == ""){$("#Rut").addClass("campo_vacio");} else {$("#Rut").removeClass("campo_vacio")}
+			}
+		
+		});
+	
+});

@@ -1,0 +1,73 @@
+/*
+Funciones necesarias para agregar al carro, eliminar un producto del carro o restar un producto
+*/
+function quitarElementoCarroCotizacion(id){
+	$(".cont_loading").fadeIn(200);
+		var id_pro = id;
+		var cantidadDescontar = parseInt(1);
+		console.log(cantidadDescontar);
+			$.ajax({
+				type: "GET",
+				url: "tienda/addCotizacion.php",
+				data: {id:id_pro, action:"remove", qty:cantidadDescontar},
+				cache: false,
+				 success:function() {
+					$(".totalHeaderCotizacion").load("tienda/totalCartCotizacion.php");
+					$(".cantItemsCotizacion").load("tienda/qtyTotalCotizacion.php"); 
+					$("#contFilasCarro").load("tienda/showCartCotizacion.php");
+					$(".cont_loading").fadeOut(200);
+				},
+				error: function() {
+					$(".cont_loading").fadeOut(200);
+				}
+			}).done(function(){
+				$(".cont_loading").fadeOut(200);
+			});	
+	}
+
+
+function agregarElementoCarroCotizacion(id){
+	console.log("agraga desde carro de compra");
+	$(".cont_loading").fadeIn(200);
+		var id_pro = id;
+		var cantidad = parseInt(1);
+		var cantActual = $(".cantItems").html();	
+		console.log(cantidad);	
+			$.ajax({
+				type: 'GET',
+				url: 'tienda/addCotizacion.php',
+				data: {id:id_pro, action:"add", qty:cantidad},
+				cache: false,
+				 success:function() {
+					$(".totalHeaderCotizacion").load("tienda/totalCartCotizacion.php");
+					$(".cantItemsCotizacion").load("tienda/qtyTotalCotizacion.php"); 
+					$("#contFilasCarro").load("tienda/showCartCotizacion.php");
+					$(".cont_loading").fadeOut(200);
+				}
+			});
+	}
+	
+	
+	
+function eliminaItemCarroCotizacion(id){
+		var id_pro = id;
+		$(".cont_loading").fadeIn(200);
+		$.ajax({
+			type: "GET",
+			url: "tienda/addCotizacion.php",
+			data: {id:id_pro, action:"delete"},
+			cache: false,
+			 success:function() {
+				$(".totalHeaderCotizacion").load("tienda/totalCartCotizacion.php");
+					$(".cantItemsCotizacion").load("tienda/qtyTotalCotizacion.php"); 
+					$("#contFilasCarro").load("tienda/showCartCotizacion.php");
+					$(".cont_loading").fadeOut(200);
+				swal("","Producto eliminado con exito","success");
+			},
+			error: function() {
+				$(".cont_loading").fadeOut(100);
+			}
+		});
+	}
+
+

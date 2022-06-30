@@ -1,0 +1,79 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block contenido %}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+<!--estilo datatable -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+<!--Mostrar los productos-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Productos</h1><a href="agregarProducto">Agregar producto</a><br><br>
+            <a href="agregarTipoProducto">Agregar tipo producto</a><br><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped" id="myTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Editar</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <th scope="row">{{ producto.nombre }}</th>
+                        <td>{{ producto.descripcion }}</td>
+                        <td>{{ producto.stock }}</td>
+                        <td>{{ producto.precio }}</td>
+                        <td>
+                            <a href="./modificarProducto?id={{ producto.id }}" class="btn btn-warning">Editar</a>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        // call jquey
+        $(document).ready(function () {
+            $('#myTable').DataTable(
+                {
+                    responsive: true,
+                    "language": {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "zeroRecords": "No se encontraron resultados en su búsqueda",
+                        "searchPlaceholder": "Buscar registros",
+                        "search": "Buscar:",
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Ultimo",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                        "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "infoEmpty": "No existen registros",
+                        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                        "loadingRecords": "Cargando..."
+                    },
+                    "order": [
+                        [0, "asc"]
+                    ]
+                    
+
+
+                }
+            );
+        });
+    </script>
+
+
+
+    {% endblock %}

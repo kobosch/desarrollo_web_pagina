@@ -1,0 +1,1018 @@
+$(document).mouseup(function(e){
+    if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        if (!$(".contenedor.bg").is(e.target) && $(".contenedor.bg").has(e.target).length === 0 && !$(".menu-btn").is(e.target) && $(".menu-btn").has(e.target).length === 0){
+            $('.hamburguer').removeClass('open');
+            $('.nav').slideUp(100);
+        }
+		if (!$(".menuUser").is(e.target) && $(".menuUser").has(e.target).length === 0 && !$(".btnMenuUser").is(e.target) && $(".btnMenuUser").has(e.target).length === 0){
+            $('.menuUser').slideUp(100);
+        }
+    }
+});
+
+$(document).ready(function(){
+	$('#loader').append('<div></div>');
+
+	$('.slidesMarcas').slick({
+	    infinite: true,
+	    autoplay: true,
+	    autoplaySpeed: 3000,
+	    slidesToShow: 4,
+	    slidesToScroll: 1,
+	    arrows: true,
+	    responsive: [{
+	        breakpoint: 769,
+	        settings: {
+	            arrows: true,
+	            slidesToShow: 2
+	        }
+	    },{
+	        breakpoint: 480,
+	        settings: {
+	            centerMode: true,
+	            centerPadding: '0px',
+	            slidesToShow: 2
+	        }
+	    }]
+	});
+
+	$("a").on('click', function(event){
+        if(this.hash !== ""){
+            event.preventDefault();
+            var hash    = this.hash;
+            var top     = $(hash).offset().top - 50;
+            $('html, body').animate({
+                scrollTop: top
+            }, 800, function(){
+                //window.location.hash = hash;
+            });
+        }
+    });
+
+	$('.menu-btn').click(function(e){
+		e.preventDefault();
+
+		console.log("asd");
+
+		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+
+			$('.hamburguer').toggleClass('open');
+			$('.nav').slideToggle(100);
+
+			console.log("DESK");
+
+		}else{
+
+			console.log("MOBILE");
+
+			$('.hamburguer').toggleClass('open');
+			$('.nav').slideToggle(100);
+
+			if($('.hamburguer').hasClass('open')){
+				$('.hamburguer').css('float','right');
+				$('.contCarroCompras').css('opacity','0');
+				$('.contCarroCompras').css('visibility','hidden');
+				$('.contMiCuenta').css('opacity','0');
+				$('.contMiCuenta').css('visibility','hidden');
+			}else{
+				$('.hamburguer').css('float','left');
+				$('.contCarroCompras').css('opacity','1');
+				$('.contCarroCompras').css('visibility','visible');
+				$('.contMiCuenta').css('opacity','1');
+				$('.contMiCuenta').css('visibility','visible');
+			}
+		}
+	});
+
+
+	$('.btnMenuUser').on('click', function(){
+		if($('.menuUser').is(':visible')){
+			$('.menuUser').slideUp(100);
+		}else{
+			$('.menuUser').slideDown(100);
+		}
+		
+	});
+
+
+	$('.btnCart').on('click', function(e){
+		var cantidad = $(".cantItems")
+		e.preventDefault();
+		$.ajax({
+			type: 'GET',
+			url: 'pags/popUpAddToCart.php',
+			cache: false,
+			 success:function(resp){
+				 $(".cont_loading").fadeOut(200);
+				 $("#popUp").html(resp);
+				 $(".fondoPopUp").fadeIn(100);
+				 $('.contPop').css('right','0px');
+			 }
+		});
+	});
+
+	$('.btnDeleteCart').on('click', function(e){
+		e.preventDefault();
+		var id_pro = $(this).attr('rel');
+		$.ajax({
+			type: "GET",
+			url: "tienda/addCarro.php",
+			data: {id:id_pro, action:"delete"},
+			cache: false,
+			 success:function() {
+				$(".cantItems").load("tienda/qtyTotal.php"); 
+			}
+		});
+	});
+
+	$('#boleta').on('click', function(){
+		$('.datos-factura').slideUp(500);
+	});
+
+	$('#factura').on('click', function(){
+		$('.datos-factura').slideToggle(500);
+	});
+
+	$('#domicilio').on('click', function(){
+		$('.datos-retiro').slideUp(500, function(){
+			$('.datos-envio').slideDown(500);	
+			$('#lb-domicilio').addClass('active');
+			$('#lb-retiro').removeClass('active');
+		});
+		
+	});
+
+	$('#retiro').on('click', function(){
+		$('.datos-envio').slideUp(500, function(){
+			$('.datos-retiro').slideDown(500);	
+			$('#lb-domicilio').removeClass('active');
+			$('#lb-retiro').addClass('active');
+		});
+	});
+
+	$('#yo').on('click', function(){
+		$('.quien_retira').slideUp(500);
+	});
+
+	$('#otro').on('click', function(){
+		$('.quien_retira').slideDown(500);
+	});
+
+	$('.region_despacho').on('change', function(){
+		var $this   = $(this);
+        var id      = $this.val();
+        loading();
+        $.ajax({
+            type    : 'POST',
+            url     : 'ajax/resources/select-direcciones.php',
+            data    : { value:id, action:'com' },
+            cache   : false,
+            success : function(comunas){
+                loading();
+                var $select = $('.comuna_despacho');
+                $select.empty();
+                $select.append($("<option/>").attr("value", 0).text('Seleccione'));
+                $(comunas).each(function (index, o) { 
+                    var $option = $("<option/>").attr("value", o[0]).text(o[1]);
+                    $select.append($option);
+                });
+            }
+        });
+	});
+
+	$('.region_mis_direcciones').on('change', function(){
+		var $this   = $(this);
+        var id      = $this.val();
+        loading();
+        $.ajax({
+            type    : 'POST',
+            url     : 'ajax/resources/select-direcciones.php',
+            data    : { value:id, action:'com' },
+            cache   : false,
+            success : function(comunas){
+                loading();
+                var $select = $('.comuna_mis_direcciones');
+                $select.empty();
+                $select.append($("<option/>").attr("value", 0).text('Seleccione'));
+                $(comunas).each(function (index, o) { 
+                    var $option = $("<option/>").attr("value", o[0]).text(o[1]);
+                    $select.append($option);
+                });
+            }
+        });
+	});
+
+	/*$('#emailCompra').on('blur', function(){
+		var email = $(this).val();
+		if(email){
+
+			loading();
+	        $.ajax({
+	            type    : 'POST',
+	            url     : 'ajax/cart/emailCompra.php',
+	            data    : { email:email },
+	            cache   : false,
+	            success : function(rsp){
+	                if(rsp.trim() == 'ERROR'){
+	                	loading();	
+	                	location.href = "envio-y-pago?email=" + encodeURI(email) + '&n=true';
+	                }else{
+	                	location.href = "envio-y-pago?email=" + encodeURI(email);
+	                	//location.href = "envio-y-pago";
+	                }
+	            }
+	        });
+
+		}else{
+			return false;
+		}
+	});*/
+
+	$('#btnEmailCompra').on('click', function(e){
+		e.preventDefault();
+		var obligatorios 	= true;
+		var email = $('#emailCompra').val();
+
+		if(!email){ $('#emailCompra').css("border","1px solid #044fe6"); $('#emailCompra').focus(); obligatorios = false; }
+		else{ $('#emailCompra').css("border","1px solid #dfe1e6"); }
+
+		if(!validarEmail(email)){ $('#emailCompra').css("border","1px solid #044fe6"); $('#emailCompra').focus(); obligatorios = false; }
+		else{ $('#emailCompra').css("border","1px solid #dfe1e6"); }
+
+		if(obligatorios){
+
+			loading();
+	        $.ajax({
+	            type    : 'POST',
+	            url     : 'ajax/cart/emailCompra.php',
+	            data    : { email:email },
+	            cache   : false,
+	            success : function(rsp){
+	            	console.log(rsp);
+	                if(rsp.trim() == 'ERROR'){
+	                	loading();	
+	                	location.href = "envio-y-pago?email=" + encodeURI(email) + '&n=true';
+	                }else{
+	                	location.href = "envio-y-pago?email=" + encodeURI(email);
+	                	//location.href = "envio-y-pago";
+	                }
+	            }
+	        });
+
+		}else{
+			return false;
+		}
+	});
+
+
+
+	var loadinglike = false;
+	$('.like').on('click', function(e){
+		e.preventDefault();
+		var $this = $(this);
+		var id_pro = $this.attr('rel');
+
+		if($this.find('.fa-heart').hasClass('far')){ // NO GUARDADO
+			$this.find('.fa-heart').removeClass('far');
+			$this.find('.fa-heart').addClass('fas');
+
+			if($this.parent().hasClass('favoritos')){
+				$this.parent().find('span').text('Eliminar de favoritos');
+			}
+
+			if(!loadinglike){
+				loadinglike = true;
+				$.ajax({
+					type: 'GET',
+					url: 'tienda/addLista.php',
+					data: {id:id_pro, action:"add", qty:"1"},
+					cache: false,
+					 success:function(rsp) {
+					 	console.log(rsp);
+					 	loadinglike = false;
+						$('.contWish').load('tienda/qtyWish.php');
+					}
+				});
+			}
+
+		}else{ // GUARDADO
+			$this.find('.fa-heart').removeClass('fas'); 
+			$this.find('.fa-heart').addClass('far');
+
+			if($this.parent().hasClass('favoritos')){
+				$this.parent().find('span').text('Agregar a favoritos');
+			}
+
+			if(!loadinglike){
+				loadinglike = true;
+				$.ajax({
+					type: 'GET',
+					url: 'tienda/addLista.php',
+					data: {id:id_pro, action:"delete", qty:"1"},
+					cache: false,
+					 success:function() {
+					 	loadinglike = false;
+					 	$('.contWish').load('tienda/qtyWish.php');
+					}
+				});
+			}
+		}
+	});
+
+	$('.share').on('click', function(e){
+		e.preventDefault();
+		var copiar = $(this).find('.copy').val();
+		var aux = document.createElement("input");
+		aux.setAttribute("value", copiar);
+		document.body.appendChild(aux);
+		aux.select();
+		document.execCommand("copy");
+		document.body.removeChild(aux);
+		swal('','Link copiado al portapapeles','');
+	});
+
+
+	$('.btn-registro').on('click', function(e){
+		e.preventDefault();
+
+		var formRegistro 		= document.forms['formRegistro'];
+		var obligatorios 	= true;
+		var datos 			= {
+			email 				: formRegistro.email.value,
+			nombre 				: formRegistro.nombre.value,
+			telefono 			: formRegistro.telefono.value,
+			pass 				: formRegistro.pass.value,
+			pass2 				: formRegistro.pass2.value,
+		};
+
+		if(!datos.email){ formRegistro.email.style.border = "1px solid #044fe6"; formRegistro.email.focus(); obligatorios = false; }
+		else{ formRegistro.email.style.border = "1px solid #dfe1e6"; }
+
+		if(!validarEmail(datos.email)){ formRegistro.email.style.border = "1px solid #044fe6"; formRegistro.email.focus(); obligatorios = false; }
+		else{ formRegistro.email.style.border = "1px solid #dfe1e6"; }
+
+		if(!datos.nombre){ formRegistro.nombre.style.border = "1px solid #044fe6"; formRegistro.nombre.focus(); obligatorios = false; }
+		else{ formRegistro.nombre.style.border = "1px solid #dfe1e6"; }
+
+		if(!datos.telefono){ formRegistro.telefono.style.border = "1px solid #044fe6"; formRegistro.telefono.focus(); obligatorios = false; }
+		else{ formRegistro.telefono.style.border = "1px solid #dfe1e6"; }
+
+		if(datos.telefono.length < 9){ formRegistro.telefono.style.border = "1px solid #044fe6"; formRegistro.telefono.focus(); obligatorios = false; }
+		else{ formRegistro.telefono.style.border = "1px solid #dfe1e6"; }
+
+
+		if(!datos.pass){ formRegistro.pass.style.border = "1px solid #044fe6"; formRegistro.pass.focus(); obligatorios = false; }
+		else{ formRegistro.pass.style.border = "1px solid #dfe1e6"; }
+
+		if(!datos.pass2){ formRegistro.pass2.style.border = "1px solid #044fe6"; formRegistro.pass2.focus(); obligatorios = false; }
+		else{ formRegistro.pass2.style.border = "1px solid #dfe1e6"; }
+
+
+		if(datos.pass != datos.pass2){
+			obligatorios = false;
+			formRegistro.pass.style.border = "1px solid #044fe6"; formRegistro.pass.focus(); 
+			formRegistro.pass2.style.border = "1px solid #044fe6"; formRegistro.pass2.focus();
+		}else{
+			formRegistro.pass.style.border = "1px solid #dfe1e6";
+			formRegistro.pass2.style.border = "1px solid #dfe1e6";
+		}
+
+
+		if(!obligatorios){
+			return false;
+		}else{
+
+			loading();
+	        $.ajax({
+	            type    : 'POST',
+	            url     : 'ajax/user/registro.php',
+	            data    : { datos:datos },
+	            cache   : false,
+	            success : function(rsp){
+	                if(rsp.trim() != 'SUCCESS'){
+	                	swal("",rsp.trim(),"warning")
+	                	loading();	
+	                }else{
+	                	swal("","¡Gracias por registrarte!","").then(function(){
+	                		location.href = "mi-cuenta";
+	                	});
+	                }
+	            }
+	        });
+
+		}
+	});
+
+	$('.btn-login').on('click', function(e){
+		e.preventDefault();
+
+		var formLogin 		= document.forms['formLogin'];
+		var obligatorios 	= true;
+		var datos 			= {
+			email 				: formLogin.email.value,
+			pass 				: formLogin.pass.value,
+		};
+
+		if(!datos.email){ formLogin.email.style.border = "1px solid #044fe6"; formLogin.email.focus(); obligatorios = false; }
+		else{ formLogin.email.style.border = "1px solid #dfe1e6"; }
+
+		if(!validarEmail(datos.email)){ formLogin.email.style.border = "1px solid #044fe6"; formLogin.email.focus(); obligatorios = false; }
+		else{ formLogin.email.style.border = "1px solid #dfe1e6"; }
+
+		if(!datos.pass){ formLogin.pass.style.border = "1px solid #044fe6"; formLogin.pass.focus(); obligatorios = false; }
+		else{ formLogin.pass.style.border = "1px solid #dfe1e6"; }
+
+
+		if(!obligatorios){
+			return false;
+		}else{
+
+			loading();
+	        $.ajax({
+	            type    : 'POST',
+	            url     : 'ajax/user/login.php',
+	            data    : { datos:datos },
+	            cache   : false,
+	            success : function(rsp){
+	            	console.log(rsp);
+	                if(rsp.trim() != 'SUCCESS'){
+	                	swal("",rsp.trim(),"warning");
+	                	loading();
+	                }else{
+	                	location.reload();
+	                }
+	            }
+	        });
+		}
+	});
+
+
+	$('.btn-actualizar').on('click', function(e){
+		e.preventDefault();
+		var formActualizar 		= document.forms['formActualizar'];
+		var obligatorios 	= true;
+		var datos 			= {
+			nombre 		: formActualizar.nombre.value,
+			rut 		: formActualizar.rut.value,
+			pass 		: formActualizar.pass.value,
+			pass2 		: formActualizar.pass2.value
+		};
+
+		
+		if(!datos.nombre){ formActualizar.nombre.style.border = "1px solid #044fe6"; formActualizar.nombre.focus(); obligatorios = false; }
+		else{ formActualizar.nombre.style.border = "1px solid #dfe1e6"; }
+
+		if(!datos.rut){ formActualizar.rut.style.border = "1px solid #044fe6"; formActualizar.rut.focus(); obligatorios = false; }
+		else{ formActualizar.rut.style.border = "1px solid #dfe1e6"; }
+
+		if(datos.pass){
+			if(!datos.pass){ formActualizar.pass.style.border = "1px solid #044fe6"; formActualizar.pass.focus(); obligatorios = false; }
+			else{ formActualizar.pass.style.border = "1px solid #dfe1e6"; }
+
+			if(!datos.pass2){ formActualizar.pass2.style.border = "1px solid #044fe6"; formActualizar.pass2.focus(); obligatorios = false; }
+			else{ formActualizar.pass2.style.border = "1px solid #dfe1e6"; }	
+
+			if(datos.pass != datos.pass2){
+				obligatorios = false;
+				formActualizar.pass.style.border = "1px solid #044fe6"; formActualizar.pass.focus(); 
+				formActualizar.pass2.style.border = "1px solid #044fe6"; formActualizar.pass2.focus();
+			}else{
+				formActualizar.pass.style.border = "1px solid #dfe1e6";
+				formActualizar.pass2.style.border = "1px solid #dfe1e6";
+			}
+		}
+
+		if(!obligatorios){
+			return false;
+		}else{
+
+			loading();
+	        $.ajax({
+	            type    : 'POST',
+	            url     : 'ajax/user/actualizar.php',
+	            data    : { datos:datos },
+	            cache   : false,
+	            success : function(rsp){
+	            	console.log(rsp);
+	            	loading();
+	                if(rsp.trim() != 'SUCCESS'){
+	                	swal("",rsp.trim(),"warning");
+	                }
+	            }
+	        });
+		}
+	});
+
+	$('.guardarDireccion').on('click', function(e){
+		e.preventDefault();
+		var formAddDireccion 		= document.forms['formAddDireccion'];
+		var obligatorios 	= true;
+		var datos 			= {
+			nombre 		: formAddDireccion.nombre.value,
+			region 		: formAddDireccion.region.value,
+			comuna 		: formAddDireccion.comuna.value,
+			calle 		: formAddDireccion.calle.value,
+			numero 		: formAddDireccion.numero.value,
+			depto 		: formAddDireccion.depto.value
+		};		
+
+		if(!datos.nombre.trim()){ formAddDireccion.nombre.style.border = "1px solid #044fe6"; formAddDireccion.nombre.focus(); obligatorios = false; }
+		else{ formAddDireccion.nombre.style.border = "1px solid #dfe1e6"; }
+
+		if(datos.region == 0){ formAddDireccion.region.style.border = "1px solid #044fe6"; formAddDireccion.region.focus(); obligatorios = false; }
+		else{ formAddDireccion.region.style.border = "1px solid #dfe1e6"; }
+
+		if(datos.comuna == 0){ formAddDireccion.comuna.style.border = "1px solid #044fe6"; formAddDireccion.comuna.focus(); obligatorios = false; }
+		else{ formAddDireccion.comuna.style.border = "1px solid #dfe1e6"; }
+
+		if(!datos.calle.trim()){ formAddDireccion.calle.style.border = "1px solid #044fe6"; formAddDireccion.calle.focus(); obligatorios = false; }
+		else{ formAddDireccion.calle.style.border = "1px solid #dfe1e6"; }
+
+		if(!datos.numero.trim()){ formAddDireccion.numero.style.border = "1px solid #044fe6"; formAddDireccion.numero.focus(); obligatorios = false; }
+		else{ formAddDireccion.numero.style.border = "1px solid #dfe1e6"; }
+
+		if(!obligatorios){
+			return false;
+		}else{
+
+			loading();
+	        $.ajax({
+	            type    : 'POST',
+	            url     : 'ajax/user/agregar_direccion.php',
+	            data    : { datos:datos },
+	            cache   : false,
+	            success : function(rsp){
+	            	console.log(rsp);
+	                if(rsp.trim() != 'SUCCESS'){
+	                	swal("",rsp.trim(),"warning");
+	                	loading();
+	                }else{
+	                	location.reload();
+	                }
+	            }
+	        });
+		}
+
+	});
+
+
+	$('.nuevaDireccion').on('click', function(e){
+		e.preventDefault();
+		$('.direcciones').fadeOut(200, function(){
+			$('.add-direccion').fadeIn(200);
+		});
+	});
+
+	$('.add-direccion .btn-volver').on('click', function(e){
+		e.preventDefault();
+		$('.add-direccion').fadeOut(200, function(){
+			$('.direcciones').fadeIn(200);
+		});
+	});
+
+	$('.edit-dir').on('click', function(e){
+		e.preventDefault();
+		var id = $(this).attr('rel');
+		$('.direcciones').fadeOut(200, function(){
+			$('.edit-direccion').fadeIn(200);
+			$('.edit-direccion').load('ajax/user/loadEditDir.php?id='+id);
+		});
+		
+	});
+
+	$('.del-dir').on('click', function(e){
+		e.preventDefault();
+		var id = $(this).attr('rel');
+
+		swal({
+            title: "¿Estas seguro que vas a eliminar tu dirección?",
+            text: "",
+            icon: "",
+            buttons: {
+			    cancel: "No, cancelar",
+			    ok: "Si, eliminar",
+			},
+            dangerMode: false,
+        }).then((misDatos) => {
+            if(misDatos){ // SI
+                
+            	loading();
+		        $.ajax({
+		            type    : 'POST',
+		            url     : 'ajax/user/eliminar_direccion.php',
+		            data    : { id:id },
+		            cache   : false,
+		            success : function(rsp){
+		            	console.log(rsp);
+		                if(rsp.trim() != 'SUCCESS'){
+		                	swal("",rsp.trim(),"warning");
+		                	loading();
+		                }else{
+		                	location.reload();
+		                }
+		            }
+		        });
+
+            }
+        });
+	});
+
+	$('.mis_direcciones').on('change', function(e){
+		e.preventDefault();
+		var id = $(this).val();
+
+		if(id == 'a'){
+			$('.region_despacho').val(0);
+          	$('.comuna_despacho').val(0);
+          	$('.direccion_despacho').val("");
+          	$('.numero_despacho').val("");
+          	$('.depto_despacho').val("");
+		}else{
+
+			loading();
+
+			$.ajax({
+	          	type    : 'POST',
+	          	url     : 'ajax/resources/select-direcciones.php',
+	          	data    : { value:id, action:'cli' },
+	          	cache   : false,
+	          	success : function(rsp){
+	              	console.log(rsp[0]);
+	              	$('.region_despacho').val(rsp[0][2]);
+	              	$('.comuna_despacho').val(rsp[0][3]);
+	              	$('.direccion_despacho').val(rsp[0][4]);
+	              	$('.numero_despacho').val(rsp[0][5]);
+          			$('.depto_despacho').val(rsp[0][6]);
+          			
+					var comuna  = rsp[0][3];
+					var email 	= $('#emailCompra').val();
+
+					$.ajax({
+			          	type    : 'POST',
+			          	url     : 'ajax/cart/valorDespacho.php',
+			          	data    : { comuna:comuna },
+			          	cache   : false,
+			          	success : function(rsp){
+			              	loading();
+			              	$('.cartResumen').load('ajax/cart/showCartResumen.php?comuna='+comuna+'&email='+email+'&e=1');
+			              	console.log(rsp);
+			          	}
+			      	});
+
+	          	}
+	      	});
+		}
+	});
+
+	$('.comuna_despacho').on('change', function(){
+		loading();
+		var comuna = $(this).val();
+		var email = $('#emailCompra').val();
+		$.ajax({
+          	type    : 'POST',
+          	url     : 'ajax/cart/valorDespacho.php',
+          	data    : { comuna:comuna },
+          	cache   : false,
+          	success : function(rsp){
+              	loading();
+              	$('.cartResumen').load('ajax/cart/showCartResumen.php?comuna='+comuna+'&email='+email+'&e=1');
+              	console.log(rsp);
+          	}
+      	});
+	});
+
+
+	$('.ordenarPorLinea').on('change', function(){
+		location.href = $(this).val();
+	});
+
+	$('.bubble-whats .close').on('click', function(){
+		$('.bubble-whats').fadeOut('fast');
+	});
+
+	$('.filtro-esp').on('change', function(e){
+		e.preventDefault();
+		var $this 	= $(this);
+		var id 		= $this.val();
+		var url_ 	= $('#fil_url').val();
+		var esp 	= $('#fil_esp').val();
+		var ipp 	= $('#ipp').val();
+		var page 	= $('#n_page').val();
+		location.href = url_ + "/" + id;
+	});
+	
+	$('.campo_buscador').keyup(function(){
+		var value = encodeURI($(this).val());
+		if($(this).val().length > 0){
+			$('.auto-busqueda').load('ajax/resources/buscador.php?value='+value, function(){
+				$('.auto-busqueda').slideDown();
+			});
+		}else{
+			$('.auto-busqueda').slideUp();
+		}
+	});
+
+	$('.solicitar-estudios').on('click', function(e){
+		e.preventDefault();
+		var pd_id = $(this).attr('rel');
+
+		loading();
+        $.ajax({
+            type    : 'POST',
+            url     : 'ajax/user/solicitar-estudios.php',
+            data    : { pd_id:pd_id },
+            cache   : false,
+            success : function(rsp){
+            	console.log(rsp);
+            	loading();
+            	swal('','Solicitud enviada, un ejecutivo se comunicará a la brevedad','success');
+                
+            }
+        });
+
+	});
+
+	$('.countdown').each(function(){
+        var $this = $(this);
+        var date = $this.attr('rel').replace(' ','T');
+        var countDownDate = new Date(date).getTime();
+
+        setInterval(function() {
+            var now = new Date().getTime();
+            var distance = Math.abs(new Date(countDownDate - now).getTime());
+    
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // console.log(distance);
+            // console.log("d" + days);
+            // console.log("h" + hours);
+            // console.log("m" + minutes);
+            // console.log("s" + seconds);
+
+
+            if(days < 10){
+            	days_ = '<i>0'+days+'</i><small>Días</small>';
+            }else{
+            	m1 = String(days).substring(0, 1);
+            	m2 = String(days).substring(1, 2);
+            	days_ = '<i>'+m1+m2+'</i><small>Días</small>';
+            }
+
+            hdays = days * 24;
+            hours = hours + hdays;
+
+            if(hours < 10){
+            	hours_ = '<i>0'+hours+'</i><small>Horas</small>';
+            }else{
+            	m1 = String(hours).substring(0, 1);
+            	m2 = String(hours).substring(1, 2);
+            	hours_ = '<i>'+m1+m2+'</i><small>Horas</small>';
+            }
+
+            if(minutes < 10){
+            	minutes_ = '<i>0'+minutes+'</i><small>Minutos</small>';
+            }else{
+            	m1 = String(minutes).substring(0, 1);
+            	m2 = String(minutes).substring(1, 2);
+            	minutes_ = '<i>'+m1+m2+'</i><small>Minutos</small>';
+            }
+
+            if(seconds < 10){
+            	seconds_ = '<i>0'+seconds+'</i><small>Segundos</small>';
+            }else{
+            	m1 = String(seconds).substring(0, 1);
+            	m2 = String(seconds).substring(1, 2);
+            	seconds_ = '<i>'+m1+m2+'</i><small>Segundos</small>';
+            }
+
+            $this.empty();
+            if(distance > 300) {
+	            if(days){
+	            	$this.append("<div class='t'>oferta termina en:</div>");
+	                $this.append("<span>" + days_ + "</span>");
+	                $this.append("<span>" + hours_ + "</span>");
+	                $this.append("<span>" + minutes_ + "</span>");
+
+	            }else if(hours){
+	            	$this.append("<div class='t'>oferta termina en:</div>");
+	                $this.append("<span>" + hours_ + "</span>");
+	                $this.append("<span>" + minutes_ + "</span>");
+	                $this.append("<span>" + seconds_ + "</span>");
+	            }
+            }else{
+            	$this.parent().remove();
+            }
+
+        }, 1000);
+    });
+
+
+	$('#formContacto').on('submit', function(e){
+        e.preventDefault();
+        var form    = document.forms['formContacto'];
+        var datos   = {
+            nombre      : form.nombre.value,
+            telefono    : form.telefono.value,
+            email       : form.email.value,
+            mensaje 	: form.mensaje.value
+        }
+
+        if(!datos.nombre){ swal("","Ingrese su nombre",""); return false; }
+        if(!datos.telefono){ swal("","Ingrese su teléfono",""); return false; }
+        if(!datos.email){ swal("","Ingrese su email",""); return false; }
+        if(!validarEmail(datos.email)){ swal("","El email ingresado no es válido",""); return false; }
+
+        loading();
+        $.ajax({
+            type    : 'POST',
+            url     : 'ajax/mail/contacto.php',
+            data    : { datos:datos },
+            cache   : false,
+            success : function(row){
+                loading();
+                if(row.trim() == 'SUCCESS'){
+                    swal("","Muchas gracias un ejecutivo te contactara","success").then(function(){
+                        location.reload();
+                    });
+                }else{
+                    swal("",row.trim(),"warning");
+                }
+            }
+        });
+    });
+
+});
+
+
+function ir_al_pago(){
+	var formInfo 		= document.forms['formInfo'];
+	var focus 			= "";
+	var obligatorios 	= true;
+	var datos 			= {
+		//factura 			: $('#factura').is(':checked'),
+		factura 			: $('.datos-factura').is(':visible'),
+		email 				: formInfo.email.value,
+		nombre 				: formInfo.nombre.value,
+		telefono 			: formInfo.telefono.value,
+		rut 				: formInfo.rut.value,
+		tipo_despacho 		: formInfo.tipoDespacho.value,
+		region 				: formInfo.region_despacho.value,
+		comuna 				: formInfo.comuna_despacho.value,
+		direccion 			: formInfo.direccion.value,
+		numero 				: formInfo.numero.value,
+		depto 				: formInfo.depto.value,
+		comentarios 		: formInfo.comentarios.value,
+		tienda 				: formInfo.retiroTienda.value,
+		quien_retira		: formInfo.quien_retira.value,
+		nombre_retiro 		: formInfo.nombre_retiro.value,
+		rut_retiro 			: formInfo.rut_retiro.value,
+		razon_social 		: formInfo.razon_social.value,
+		rut_empresa 		: formInfo.rut_empresa.value,
+		giro 				: formInfo.giro.value,
+		direccion_empresa 	: formInfo.direccion_empresa.value,
+		mis_direcciones 	: formInfo.mis_direcciones.value,
+		guardar_info 		: $('#fcompra').is(':checked'),
+		mis_datos 			: $('#mis_datos').val()
+	};
+
+
+	if(datos.factura){
+		if(!datos.razon_social){ formInfo.razon_social.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.razon_social; obligatorios = false; }
+		else{ formInfo.razon_social.style.border = "1px solid #cbcbcb"; }
+
+		if(!datos.rut_empresa){ formInfo.rut_empresa.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.rut_empresa; obligatorios = false; }
+		else{ formInfo.rut_empresa.style.border = "1px solid #cbcbcb"; }
+
+		if(!datos.giro){ formInfo.giro.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.giro; obligatorios = false; }
+		else{ formInfo.giro.style.border = "1px solid #cbcbcb"; }
+
+		if(!datos.direccion_empresa){ formInfo.direccion_empresa.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.direccion_empresa; obligatorios = false; }
+		else{ formInfo.direccion_empresa.style.border = "1px solid #cbcbcb"; }
+	}
+
+	if(!datos.email){ formInfo.email.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.email; obligatorios = false; }
+	else{ }//formInfo.email.style.border = "1px solid #cbcbcb"; }
+
+	if(!datos.nombre){ formInfo.nombre.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.nombre; obligatorios = false; }
+	else{ }//formInfo.nombre.style.border = "1px solid #cbcbcb"; }
+
+	if(!datos.telefono){ formInfo.telefono.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.telefono; obligatorios = false; swal("Tu teléfono debe ser de 9 dígitos \n Ej: 9 8765 4321"); }
+	else{ }//formInfo.telefono.style.border = "1px solid #cbcbcb"; }
+
+	if(datos.telefono.length < 9){ formInfo.telefono.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.telefono; obligatorios = false; }
+	else{ }//formInfo.telefono.style.border = "1px solid #cbcbcb"; }
+
+	if(!datos.rut){ formInfo.rut.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.rut; obligatorios = false; }
+	else{ }//formInfo.rut.style.border = "1px solid #cbcbcb"; }
+
+	if(datos.tipo_despacho == 'domicilio'){
+
+		if(datos.mis_direcciones != '0'){
+
+			datos.mi_direccion = formInfo.misDirecciones.value;
+
+			if(datos.mi_direccion == 'otraDir'){
+
+				if(datos.region == 0){ formInfo.region_despacho.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.region_despacho; obligatorios = false; }
+				else{ formInfo.region_despacho.style.border = "1px solid #cbcbcb"; }
+
+				if(datos.comuna == 0){ formInfo.comuna_despacho.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.comuna_despacho; obligatorios = false; }
+				else{ formInfo.comuna_despacho.style.border = "1px solid #cbcbcb"; }
+
+				if(!datos.direccion){ formInfo.direccion.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.direccion; obligatorios = false; }
+				else{ formInfo.direccion.style.border = "1px solid #cbcbcb"; }
+
+				if(!datos.numero){ formInfo.numero.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.numero; obligatorios = false; }
+				else{ formInfo.numero.style.border = "1px solid #cbcbcb"; }
+
+			}
+
+		}else{
+
+			if(datos.region == 0){ formInfo.region_despacho.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.region_despacho; obligatorios = false; }
+			else{ formInfo.region_despacho.style.border = "1px solid #cbcbcb"; }
+
+			if(datos.comuna == 0){ formInfo.comuna_despacho.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.comuna_despacho; obligatorios = false; }
+			else{ formInfo.comuna_despacho.style.border = "1px solid #cbcbcb"; }
+
+			if(!datos.direccion){ formInfo.direccion.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.direccion; obligatorios = false; }
+			else{ formInfo.direccion.style.border = "1px solid #cbcbcb"; }
+
+			if(!datos.numero){ formInfo.numero.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.numero; obligatorios = false; }
+			else{ formInfo.numero.style.border = "1px solid #cbcbcb"; }
+					
+
+		}
+
+	}else{
+
+		if(datos.quien_retira == 'otro'){
+			if(!datos.nombre_retiro){ formInfo.nombre_retiro.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.nombre_retiro; obligatorios = false; }
+			else{ formInfo.nombre_retiro.style.border = "1px solid #cbcbcb"; }
+
+			if(!datos.rut_retiro){ formInfo.rut_retiro.style.border = "1px solid #9c373f"; if(!focus) focus = formInfo.rut_retiro; obligatorios = false; }
+			else{ formInfo.rut_retiro.style.border = "1px solid #cbcbcb"; }
+		}
+	}
+
+	if(focus){
+		focus.focus();
+	}
+
+	if(!obligatorios){
+		return false;
+	}else{
+
+		loading();
+        $.ajax({
+            type    : 'POST',
+            url     : 'ajax/cart/info-contacto.php',
+            data    : { datos:datos },
+            cache   : false,
+            success : function(rsp){
+
+            	var url = $(location).attr('href');
+				var url_ = url.replace("envio-y-pago","resumen-compra");
+				$(location).attr('href', url_);
+				
+                /*$('.datos-compra').slideUp(300, function(){
+                	$('.datos-cargados').load('ajax/cart/datos-cargados.php',function(){
+                		$('.datos-cargados').slideDown(300);
+                		loading();
+                	});
+                });
+                $('.resumen-compra').slideUp(300, function(){
+                	$('.finalizar-compra').load('ajax/cart/finalizar-compra.php',function(){
+                		$('.finalizar-compra').slideDown(300);
+                	});
+                });*/
+                
+            }
+        });
+
+	}
+
+}
+
+
+
+
+
+
+
+function validarEmail(valor) {
+	var patron=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
+ 	if(valor.search(patron) == 0){
+  		return true;
+	}else{
+		return false;
+	}
+}
+
+function loading(){
+   if($('#loader').is(':visible')) $('#loader').fadeOut('fast');
+   else $('#loader').fadeIn('fast');
+}

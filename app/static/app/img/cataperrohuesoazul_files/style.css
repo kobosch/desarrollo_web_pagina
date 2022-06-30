@@ -1,0 +1,75 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('https://i.icomoon.io/public/2f34c7d7b1/cliengowidget/icomoon.eot?99daqt');
+  src:  url('https://i.icomoon.io/public/2f34c7d7b1/cliengowidget/icomoon.eot?99daqt#iefix') format('embedded-opentype'),
+    url('https://i.icomoon.io/public/2f34c7d7b1/cliengowidget/icomoon.woff2?99daqt') format('woff2'),
+    url('https://i.icomoon.io/public/2f34c7d7b1/cliengowidget/icomoon.ttf?99daqt') format('truetype'),
+    url('https://i.icomoon.io/public/2f34c7d7b1/cliengowidget/icomoon.woff?99daqt') format('woff'),
+    url('https://i.icomoon.io/public/2f34c7d7b1/cliengowidget/icomoon.svg?99daqt#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-thumbs-down:before {
+  content: "\e90c";
+  color: #8b8b8b;
+}
+.icon-thumbs-up:before {
+  content: "\e90d";
+  color: #8b8b8b;
+}
+.icon-close:before {
+  content: "\e90b";
+}
+.icon-icon3:before {
+  content: "\e908";
+}
+.icon-icon2:before {
+  content: "\e909";
+}
+.icon-icon1:before {
+  content: "\e90a";
+}
+.icon-paper-plane-outline:before {
+  content: "\e907";
+  color: #acacac;
+}
+.icon-call:before {
+  content: "\e905";
+  color: #515151;
+}
+.icon-videocall:before {
+  content: "\e906";
+  color: #515151;
+}
+.icon-cdown:before {
+  content: "\e904";
+}
+.icon-thumbsup:before {
+  content: "\e903";
+}
+.icon-emoticons:before {
+  content: "\e900";
+}
+.icon-cancelar:before {
+  content: "\e901";
+}
+.icon-paper-plane:before {
+  content: "\e902";
+}

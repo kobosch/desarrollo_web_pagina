@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block contenido %}
+{% for x in tipos %}
+
+<div class="container">
+    <div class="card">
+        <center>
+            <h3>{{x.nombre}}</h3>
+            <p style="color:black">{{x.descripcion}}</p>
+            <a href="listaProductos?categoria={{x.id}}&category={{x.nombre}}"><button type="button"
+                    class="btn btn-info">Ir a
+                    productos</button></a>
+        </center>
+
+    </div>
+
+
+</div>
+
+{% endfor %}
+</div>
+{% endblock %}

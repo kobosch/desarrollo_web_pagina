@@ -1,0 +1,311 @@
+$(function(){
+	/*Agrego desde el fixed o desde el boton*/
+	$('#btn_agregarCarro, #btnAgregarFixed').click(function(){
+		$(".cont_loading").fadeIn(200);
+		var id_pro = $(this).attr('rel');
+		var cantidad = 1;
+
+		var cant_select = $('.select-cant').val();
+
+		if(cant_select > 10){
+			cantidad = $('.input-cant').val();
+		}else{
+			cantidad = cant_select; 
+		}
+
+		//var cantActual = $(".cantItems").html();	
+		console.log(cantidad);	
+			$.ajax({
+				type: 'POST',
+				url: 'ajax/ajax_validar_stock.php',
+				data: {id:id_pro, qty:cantidad},
+				cache: false,
+				success:function(resp) {
+					console.log("resp stock: "+resp);
+
+					if(resp >= 0){
+						$.ajax({
+							type: 'GET',
+							url: 'tienda/addCarro.php',
+							data: {id:id_pro, action:"add", qty:cantidad},
+							cache: false,
+							success:function(resp) {
+								console.log("respuesta agregar"+resp);
+								
+								//var cantTotal = parseInt(cantActual) + parseInt(cantidad);
+								//(".totalHeader").load("tienda/totalCart.php");
+								$(".cantItems").load("tienda/qtyTotal.php"); 
+								
+								$.ajax({
+									type: 'GET',
+									url: 'pags/popUpAddToCart.php',
+									data: {id:id_pro, qty:cantidad},
+									cache: false,
+									 success:function(resp){
+										 $(".cont_loading").fadeOut(200);
+										 $("#popUp").html(resp);
+										 $(".fondoPopUp").fadeIn(100);
+										 $('.contPop').css('right','0px');
+									 }
+								});
+							}
+						});
+					}else{
+						$(".cont_loading").fadeOut(200);
+						swal({
+							  type: 'error',
+							  title: 'Stock insuficiente',
+							  text: 'No fue posible agregar tu producto por falta de stock'
+							})
+					};
+
+				}
+			});
+		
+	});
+	
+	
+	
+	
+	/*agrega desde mis pedidos*/
+	
+	$('.btnComprarAhora').click(function(){
+		$(".cont_loading").fadeIn(200);
+		var id_pro = $(this).attr('rel');
+		var cantidad = parseInt(1);
+		var cantActual = $(".cantItems").html();	
+		console.log(cantidad);	
+			$.ajax({
+				type: 'POST',
+				url: 'ajax/ajax_validar_stock.php',
+				data: {id:id_pro, qty:cantidad},
+				cache: false,
+				success:function(resp) {
+					console.log("resp stock: "+resp);
+					if(resp >= 0){
+						$.ajax({
+							type: 'GET',
+							url: 'tienda/addCarro.php',
+							data: {id:id_pro, action:"add", qty:cantidad},
+							cache: false,
+							 success:function(resp) {
+								 console.log("respuesta agregar"+resp);
+								var cantTotal = parseInt(cantActual) + parseInt(cantidad);
+								$(".totalHeader").load("tienda/totalCart.php");
+								$(".cantItems").load("tienda/qtyTotal.php"); 
+								$.ajax({
+									type: 'GET',
+									url: 'pags/popUpAddToCart.php',
+									data: {id:id_pro, qty:cantidad},
+									cache: false,
+									 success:function(resp){
+										 $(".cont_loading").fadeOut(200);
+										 $("#popUp").html(resp);
+										 $(".fondoPopUp").fadeIn(100);
+									 }
+								 });
+							}
+						});
+					}else{
+						$(".cont_loading").fadeOut(200);
+						swal({
+							  type: 'error',
+							  title: 'Stock insuficiente',
+							  text: 'No fue posible agregar tu producto por falta de stock'
+							})
+					};
+				}
+			});
+		
+	});
+	
+	
+	
+	
+	
+	
+});
+
+function changeMedida(){
+	let pd_id = $('#medida-ficha').val();
+	loading();
+	$('.ficha-detail').load('ajax/ficha/fichaDetail.php?pd_id='+pd_id, function(){
+		loading();
+	});
+	$('.tiene_desc').load('ajax/ficha/descFicha.php?pd_id='+pd_id);
+	$('.desc_timer').load('ajax/ficha/timerFicha.php?pd_id='+pd_id);
+}
+function btn_agregarCarro(pd_id, selected){
+	$(".cont_loading").fadeIn(200);
+	var id_pro 		= pd_id;
+	var cantidad 	= 1;
+	var cant_select = $('.select-cant').val();
+
+	if(cant_select > 10){
+		cantidad = $('.input-cant').val();
+	}else{
+		cantidad = cant_select; 
+	}
+
+	if(selected){
+		$.ajax({
+			type: 'POST',
+			url: 'ajax/ajax_validar_stock.php',
+			data: {id:id_pro, qty:cantidad},
+			cache: false,
+			success:function(resp) {
+				console.log("resp stock: "+resp);
+
+				if(resp >= 0){
+					$.ajax({
+						type: 'GET',
+						url: 'tienda/addCarro.php',
+						data: {id:id_pro, action:"add", qty:cantidad},
+						cache: false,
+						success:function(resp) {
+							console.log("respuesta agregar"+resp);
+							
+							//var cantTotal = parseInt(cantActual) + parseInt(cantidad);
+							//(".totalHeader").load("tienda/totalCart.php");
+							$(".cantItems").load("tienda/qtyTotal.php"); 
+							
+							$.ajax({
+								type: 'GET',
+								url: 'pags/popUpAddToCart.php',
+								data: {id:id_pro, qty:cantidad},
+								cache: false,
+								 success:function(resp){
+									 $(".cont_loading").fadeOut(200);
+									 $("#popUp").html(resp);
+									 $(".fondoPopUp").fadeIn(100);
+									 $('.contPop').css('right','0px');
+								 }
+							});
+						}
+					});
+				}else{
+					$(".cont_loading").fadeOut(200);
+					swal({
+						  type: 'error',
+						  title: 'Stock insuficiente',
+						  text: 'No fue posible agregar tu producto por falta de stock'
+						});
+				};
+
+			}
+		});
+	}else{
+		$(".cont_loading").fadeOut(200);
+		swal({
+		  type: 'warning',
+		  title: '',
+		  text: 'Seleccione una talla'
+		});
+	}
+}
+
+
+var loadinglike = false;
+function likeFicha(){
+	//event.preventDefault();
+
+	var $this = $('.like-f');
+	var id_pro = $this.attr('rel');
+
+	//console.log($this.find('.fa-heart').hasClass('far'));
+
+	if($this.find('.fa-heart').hasClass('far')){ // NO GUARDADO
+		$this.find('.fa-heart').removeClass('far');
+		$this.find('.fa-heart').addClass('fas');
+
+		if(!loadinglike){
+			loadinglike = true;
+			loading();
+
+			$.ajax({
+				type: 'GET',
+				url: 'tienda/addLista.php',
+				data: {id:id_pro, action:"add", qty:"1"},
+				cache: false,
+				 success:function(rsp) {
+				 	loading();
+				 	loadinglike = false;
+					$('.contWish').load('tienda/qtyWish.php');
+				}
+			});
+		}
+
+	}else{ // GUARDADO
+		$this.find('.fa-heart').removeClass('fas'); 
+		$this.find('.fa-heart').addClass('far');
+
+
+		if(!loadinglike){
+			loadinglike = true;
+			loading();
+			$.ajax({
+				type: 'GET',
+				url: 'tienda/addLista.php',
+				data: {id:id_pro, action:"delete", qty:"1"},
+				cache: false,
+				 success:function() {
+				 	loading();
+				 	loadinglike = false;
+				 	$('.contWish').load('tienda/qtyWish.php');
+				}
+			});
+		}
+	}
+}
+
+
+function agregarTres(id1, id2, id3){
+	$(".cont_loading").fadeIn(200);
+	var id_pro = $(this).attr('rel');
+	var cantidad = 1;
+
+	$.ajax({
+		type: 'GET',
+		url: 'tienda/addCarro.php',
+		data: {id:id1, action:"add", qty:cantidad},
+		cache: false,
+		success:function(resp) {
+			$(".cantItems").load("tienda/qtyTotal.php"); 
+
+			$.ajax({
+				type: 'GET',
+				url: 'tienda/addCarro.php',
+				data: {id:id2, action:"add", qty:cantidad},
+				cache: false,
+				success:function(resp) {
+					$(".cantItems").load("tienda/qtyTotal.php"); 
+
+					$.ajax({
+						type: 'GET',
+						url: 'tienda/addCarro.php',
+						data: {id:id3, action:"add", qty:cantidad},
+						cache: false,
+						success:function(resp) {
+							$(".cantItems").load("tienda/qtyTotal.php"); 
+
+							$.ajax({
+								type: 'GET',
+								url: 'pags/popUpAddToCart.php',
+								cache: false,
+								 success:function(resp){
+									 $(".cont_loading").fadeOut(200);
+									 $("#popUp").html(resp);
+									 $(".fondoPopUp").fadeIn(100);
+									 $('.contPop').css('right','0px');
+								 }
+							});
+							
+						}
+					});
+
+				}
+			});
+
+		}
+	});
+}

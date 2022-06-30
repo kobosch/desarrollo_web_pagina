@@ -1,0 +1,34 @@
+$(function(){
+	/*Agrego desde el fixed o desde el boton*/
+	$('#btn_agregarCotizacion').click(function(){
+		$(".cont_loading").fadeIn(200);
+		var id_pro = $(this).attr('rel');
+		var cantidad = parseInt($("#spinner").val());
+		var cantActual = $(".cantItemsCotizacion").html();	
+		
+		$.ajax({
+			type: 'GET',
+			url: 'tienda/addCotizacion.php',
+			data: {id:id_pro, action:"add", qty:cantidad},
+			cache: false,
+			 success:function(resp) {
+				 console.log("respuesta agregar"+resp);
+				var cantTotal = parseInt(cantActual) + parseInt(cantidad);
+				$(".totalHeaderCotizacion").load("tienda/totalCartCotizacion.php");
+				$(".cantItemsCotizacion").load("tienda/qtyTotalCotizacion.php"); 
+				$.ajax({
+					type: 'GET',
+					url: 'pags/popUpAddToCartCotizacion.php',
+					data: {id:id_pro, qty:cantidad},
+					cache: false,
+					 success:function(resp){
+						 $("#popUp").html(resp);
+						 $(".fondoPopUp").fadeIn(100);
+					 }
+				 });
+			}
+		});/*Fin ajax*/
+		
+	});/*Fin Click*/
+
+});

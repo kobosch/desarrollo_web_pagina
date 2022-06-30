@@ -1,0 +1,80 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block contenido %}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+<!--estilo datatable -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+
+<!--Mostrar los productos-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Usuarios</h1><a href="agregarUsuario ">Agregar usuario</a><br><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped" id="myTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Tipo de usuario</th>
+                        <th scope="col">Editar</th>
+                        
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                    <tr>
+                        <th scope="row">{{ usuario.nombre }}</th>
+                        <td>{{ usuario.apellido }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>{{ usuario.tipo }}</td>
+                        <td>
+                            <a href="./modificarUsuario?id={{usuario.id}}" class="btn btn-primary">Editar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script>
+        // call jquey
+        $(document).ready(function () {
+            $('#myTable').DataTable(
+                {
+                    responsive: true,
+                    "language": {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "zeroRecords": "No se encontraron resultados en su búsqueda",
+                        "searchPlaceholder": "Buscar registros",
+                        "search": "Buscar:",
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Ultimo",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                        "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "infoEmpty": "No existen registros",
+                        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                        "loadingRecords": "Cargando..."
+                    },
+                    "order": [
+                        [0, "asc"]
+                    ]
+                    
+
+
+                }
+            );
+        });
+    </script>
+    {% endblock %}

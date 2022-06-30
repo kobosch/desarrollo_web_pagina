@@ -1,0 +1,68 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block contenido %}
+<link rel="stylesheet" href="static/app/css/style.css">
+<link rel="stylesheet" href="static/app/css/card.css">
+
+
+<div class="text_productos">
+    {%if cagegorianombre %}
+    <h1>Catalogo de {{cagegorianombre }}</h1>
+    {%else%}
+    <h1>Catalogo de productos</h1>
+    {%endif%}
+</div>
+<style>
+    .container_todoproducto .card {
+        height: auto;
+    }
+</style>
+
+<div class="container__row">
+    <div class="row">
+        <div class="col-sm-1"> </div>
+
+        <div class="col-sm-10 ">
+
+            {% for producto in productos %}
+            <div class="container_todoproducto">
+                <div class="card">
+                    <img src="http://localhost:8000/media/images/{{producto.imagen}}" alt="300" width="300">
+                    <h4>{{producto.nombre}}</h4>
+                    <h5><b>Stock:</b> {{producto.stock}}</h5>
+                    <p>{{producto.descripcion}}</p>
+                    <p>Precio Normal: ${{producto.precio}}</p>
+                    {% if producto.precioOferta != 0 %}
+                    <p>Precio Suscriptor: ${{producto.precioOferta}}</p>
+                    {% endif %}
+                    <form action="agregarCarro" method="post">
+                        {% csrf_token %}
+                        <center>
+                            <input type="number" style="width: 40%;" min="1" max="{{producto.stock}}" required class="form-control"
+                                name="cantidad" id="cantidad" value="1">
+                        </center>
+                        <br>
+                        <button type="submit" style="cursor: pointer; margin-bottom: 20px;" class="btn btn-info">
+                            agregar al Carro
+                        </button>
+
+                        <input type="hidden" name="id" id="id" value="{{producto.id}}">
+                        <input type="hidden" name="Nombre" id="Nombre" value="{{producto.Nombre}}">
+                        <input type="hidden" name="Precio" id="Precio" value="{{producto.Precio}}">
+                        <input type="hidden" name="url" id="url" value="{{categoria.IdTipoProducto}}">
+
+
+                    </form>
+
+                    <!--<a href="#"> <button type="button" class="btn btn-info">Agregar al carro</button></a>-->
+                </div>
+                {% endfor %}
+
+                
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

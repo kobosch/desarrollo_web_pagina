@@ -1,0 +1,65 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block contenido %}
+
+<!--formulario de agregar producto con nombre, descripcion cantidad y datos-->
+<form action="{% if Producto.id %}modificarProducto{% else %}agregarProducto{% endif %}" method="post"
+    enctype="multipart/form-data">
+
+    {% if Producto.id %}
+    <input readonly type="hidden" name="IdProducto" id="IdProducto" value="{{ Producto.id }}">
+    {% endif %}
+
+
+
+
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" value="{% if Producto.nombre %} {{ Producto.nombre }}{% endif %}" class="form-control"
+            id="nombre" name="nombre" placeholder="Nombre del producto">
+    </div>
+    <div class="form-group">
+        <label for="descripcion">Descripcion</label>
+        <input type="text" value="{% if Producto.descripcion %} {{ Producto.descripcion }}{% endif %}"
+            class="form-control" id="descripcion" name="descripcion" placeholder="Descripcion del producto">
+    </div>
+    <div class="form-group">
+        <label for="cantidad">Cantidad</label>
+        <input value="{% if Producto.stock %} {{ Producto.stock }}{% endif %}" class="form-control" id="cantidad"
+            name="cantidad" placeholder="Cantidad del producto">
+    </div>
+    <div class="form-group">
+        <label for="precio">Precio</label>
+        <input value="{% if Producto.precio %} {{ Producto.precio }}{% endif %}" class="form-control" id="precio"
+            name="precio" placeholder="Precio del producto">
+    </div>
+    <div class="form-group">
+        <label for="oferta">Precio oferta</label>
+        <input value="{% if Producto.precioOferta %} {{ Producto.precioOferta }}{% else %} 0 {% endif %}" class="form-control" id="oferta"
+            name="oferta" placeholder="Precio del producto">
+    </div>
+
+    <div class="form-group">
+        <label for="imagen">Imagen</label>
+        <input type="file" {% if Producto %} {%else%} required {% endif %} class="form-control" id="imagen" name="imagen" placeholder="Imagen del producto">
+    </div>
+
+    <div class="form-group">
+        <select class="form-select" name="tipo" aria-label="Default select example">
+            {% for categoria in categorias %}
+            <option {% if Producto.tipo == categoria.id %} selected {% endif %} value="{{categoria.id}}">{{categoria.nombre}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{% if Producto.Nombre %} Actualizar {%else%}Agregar{% endif %}</button>
+    {% if mensaje %}
+    <div class="alert alert-success" role="alert">
+        {{ mensaje }}
+    </div>
+    {% endif %}
+</form>
+
+
+{% endblock %}

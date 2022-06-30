@@ -1,0 +1,585 @@
+$(function() {
+	
+	var anchoVentana = $(window).width();
+	
+    $(".abrirCarro").click(function() {
+        $(".resumenCarroHeader").fadeIn(200);
+    });
+    $(".cerrarMenuCart").click(function() {
+        $(".resumenCarroHeader").fadeOut(200);
+    });
+	
+    $("#contDatosCartVariables").load("tienda/carroCompraRapida.php?comuna_id=0&retiro=1");
+
+	/*ASIGNO DIRECCION CUANDO CAMBIO EL SELECT DE DIRECCIONES DEL CLIENTE LOGUEADO */
+	$("#direcciones").change(function(){
+		var direccion = $(this).val();
+		$.ajax({
+                url: "ajax/obtenerIdDirecciones.php",
+                type: "post",
+                dataType: 'json',
+                async: true,
+                data: {id: direccion},
+                success: function(resp) {
+					console.log(resp);
+					var direccionActual = resp;
+					console.log(direccionActual.nombre);
+					if(direccionActual.existe == 1){
+						/*id direccion Si existe*/
+						$("#region").val(direccionActual.region_id);
+						$("#uniform-region span").html(direccionActual.region);
+						
+						$("#comuna").load("tienda/comunas.php?region_id=" + direccionActual.region_id);
+						$("#comuna").val(direccionActual.comuna_id);
+						$("#uniform-comuna span").html(direccionActual.comuna);
+						
+						$("#localidad").load("tienda/localidades.php?comuna_id=" + direccionActual.comuna_id);
+						$("#localidad").val(direccionActual.localidad_id);
+						$("#uniform-localidad span").html(direccionActual.localidad);
+						
+						$("#direccion").val(direccionActual.calle+ " " + direccionActual.numero);
+
+						$("#contDatosCartVariables").load("tienda/carroCompraRapida.php?comuna_id="+direccionActual.comuna_id+"&retiro=0");
+
+						} else {
+							/*id direccion no existe*/
+							swal("","No fue posible cargar su dirección.","warning");
+							}
+					}
+            });
+		});
+		
+	
+	
+	
+		
+	
+    /*Validar correo compra rapida*/
+	$("#validarCorreoCompraRapida").click(function() {
+		$(".cont_loading").fadeIn(100);
+        var correoCompraRapida = $("#emailRapido").val();
+        if (correoCompraRapida.indexOf('@', 0) == -1 || correoCompraRapida.indexOf('.', 0) == -1) {
+            //alertify.error("Ingrese un correo válido");
+			$(".cont_loading").fadeOut(100);
+			swal("","Ingrese un correo válido","warning");
+
+            $("#emailRapido").val("");
+        } else {
+            $.ajax({
+                url: "ajax/correoCompraRapida.php",
+                type: "post",
+                async: true,
+                data: {correo: correoCompraRapida},
+                success: function(resp) {
+					$(".cont_loading").fadeOut(100);
+					}
+            });
+			$(".cont_loading").fadeOut(100);
+            $(".formCompraRapida1").submit();
+        };
+    });
+	 /*Validar correo compra rapida*/
+	
+	
+	
+    $("#uniform-facturaSi").click(function() {
+        $(".contDatosFactura, .triangulo").fadeIn(100);
+    });
+    $("#uniform-facturaNo").click(function() {
+        $(".contDatosFactura, .triangulo").fadeOut(100);
+    });
+    $("#modificarDatos2").click(function() {
+        $("#modificarDatos").trigger("click");
+    });
+    $("#tienda1").click(function() {
+        $("#tabsCompra1").fadeOut(100);
+        $("#tabsCompra2").fadeIn(100);
+        console.log("cargo los valores por ajax");
+		$("#contDatosCartVariables").load("tienda/carroRetiroTienda.php");
+    });
+    
+	$("#btnIngresarCompraRapida").click(function() {
+        var usuario = $("#usuarioLogin").val();
+        var pass = $("#passLogin").val();
+        console.log(usuario + " - " + pass);
+        if (pass != '') {
+            console.log("tomo los datos y los envio por ajax");
+            $.ajax({
+                type: 'POST',
+                url: 'ajax/loginCompraRapida.php',
+                data: {
+                    correo: usuario,
+                    clave: pass
+                },
+                dataType: 'JSON',
+                success: function(data) {
+                    if (data == 1) {
+                        swal("", "inicio de sesión exitoso.", "success");
+						location.reload();
+                        /*$(".tipoBlanco").removeClass("tipoBlanco");
+                        $("#nombre, #telefono, #rut, #direccion").removeAttr("disabled");
+                        $("#razonSocial, #direccionFactura, #RutFactura, #giro").removeAttr("disabled");
+                        $(".campoFantasma").fadeOut(10);
+                        $(".campoFantasma").each(function() {
+                            $(this).css("display", "none");
+                        });
+                        $(".contRut").fadeIn(100);
+                        $("#modificarDatos").fadeOut(10);
+                        $(".fancybox-close").trigger("click");*/
+                    } else {
+						swal("", "usuario o contraseña no coinciden, si no conoce su clave puede solicitar una.", "warning");
+                        
+                    };
+                }
+            });
+        } else {
+			swal("", "Debe ingresar una contraseña válida.", "warning");
+            
+        };
+    });
+    
+	$("#solicitarClave").click(function() {
+        var usuario = $("#usuarioLogin").val();
+        $.ajax({
+            type: 'POST',
+            url: 'ajax/recuperarClaveCompraRapida.php',
+            data: {
+                correo: usuario
+            },
+            dataType: 'JSON',
+            success: function(data) {
+                if (data == 1) {
+					swal("", "Revisa tu correo, te enviamos una nueva clave.", "success");
+                    
+                } else if (data == 2) {
+					swal("", "No fue posible enviarte una nueva clave en estos momentos, intenta más tarde.", "warning");
+                    
+                } else if (data == 3) {
+					swal("", "El correo ingresado no se encuentra en nuestros registros.", "error");
+					
+                };
+            }
+        });
+    });
+
+    $('input[name="envio"]').on('change', function(){
+        var radio = $(this).val();
+        var retiro;
+        var comuna_id;
+
+        if (radio == 'direccionCliente') {
+            retiro = 0;
+            comuna_id = $('#comuna').val();
+            if (comuna_id == "Seleccione Comuna") {
+                comuna_id = 0;
+            }
+            $("#tabsCompra2").fadeOut(100);
+            $("#tabsCompra1").fadeIn(100);
+        }else{
+            retiro = 1;
+            comuna_id = 0;
+            $("#tabsCompra2").fadeIn(100);
+            $("#tabsCompra1").fadeOut(100);
+        }
+
+        console.log(comuna_id + ' --- ' + retiro);
+
+        $("#contDatosCartVariables").load("tienda/carroConDescuento.php?comuna_id="+comuna_id+"&retiro="+retiro);
+    })
+
+  //   $("#tienda2").click(function() {
+		// var comuna_id = $("#comuna").val();
+		// if(comuna_id == "Seleccione Comuna"){
+		// 	comuna_id = 0;
+		// 	}
+  //       $(".contCartCompraRapida").load("tienda/carroCompraRapida.php?comuna_id="+comuna_id+"&retiro=0");
+  //       $("#tabsCompra2").fadeOut(100);
+  //       $("#tabsCompra1").fadeIn(100);
+  //   });
+	
+	
+    $("#region").change(function() {
+        var region_id = $(this).val();
+        $("#comuna").load("tienda/comunas.php?region_id=" + region_id);
+        $("#uniform-comuna span").html("Seleccione comuna");
+        $("#uniform-localidad span").html("Localidades");
+    });
+    $("#comuna").change(function() {
+        var comuna_id = $(this).val();
+
+        var radio = $('input[name="envio"]:checked').val();
+        var retiro;
+
+        if (radio == 'direccionCliente') {
+            retiro = 0;
+        }else{
+            retiro = 1;
+        }
+
+        // console.log(comuna_id);
+        $("#localidad").load("tienda/localidades.php?comuna_id=" + comuna_id);
+        $("#uniform-localidad span").html("Seleccione Localidad.");
+		
+        $(".contCartCompraRapida").load("tienda/carroCompraRapida.php?comuna_id="+comuna_id+"&retiro="+retiro);
+    });
+   
+   
+    $("#comprar").click(function() {
+        var nombre = $("#nombre").val();
+        var email = $("#email").val();
+        var telefono = $("#telefono").val();
+        var run = $("#Rut").val();
+        var region = $("#region").val();
+        var comuna = $("#comuna").val();
+        var localidad = $("#localidad").val();
+        var direccion = $("#direccion").val();
+        var quien_recibe = $("#quien_recibe").val();
+        if (nombre != '' && email != '' && telefono != '' && run != '') {
+            if (email.indexOf('@', 0) == -1 || email.indexOf('.', 0) == -1) {
+                //console.error("Correo inválido.");
+				swal("", "Correo inválido.", "warning");
+				$("#email").addClass("incompleto");
+            } else {
+                if (nombre != '') {
+                    $("#nombre").removeClass("incompleto");
+                } else {
+                    $("#nombre").addClass("incompleto");
+                };
+                if (email != '') {
+                    $("#email").removeClass("incompleto");
+                } else {
+                    $("#email").addClass("incompleto");
+                };
+                if (telefono != '') {
+                    $("#telefono").removeClass("incompleto");
+                } else {
+                    $("#telefono").addClass("incompleto");
+                };
+                if (run != '') {
+                    $("#Rut").removeClass("incompleto");
+                } else {
+                    $("#Rut").addClass("incompleto");
+                };
+                if ($("#tienda2").is(':checked')) {
+                    console.log("activado servicio de despacho");
+                    
+                    if (region != '' && region != 'Seleccione region' && region != '0' && comuna != '347' && comuna != '' && comuna != 'sin comuna' && comuna != '0' && direccion != '' && quien_recibe != '') {    
+                        
+                        
+                        if (direccion != '') {
+                            $("#direccion").removeClass("incompleto");
+                        } else {
+                            $("#direccion").addClass("incompleto");
+                        };
+                        if (region != '' && region != 'Seleccione region' && region != '0') {
+                            /*console.log("Region seleccionada");*/
+                            $("#uniform-region").removeClass("incompleto");
+                        } else {
+                            /*alertify.error("Debe seleccionar una region");*/
+                            $("#uniform-region").addClass("incompleto");
+                        };
+                        if (comuna != '0' && comuna != '') {
+                            console.log("Comuna seleccionada");
+                            $("#uniform-comuna").removeClass("incompleto");
+                        } else {
+                            swal("","Debe seleccionar una comuna.","warning");
+                            $("#uniform-comuna").addClass("incompleto");
+                        };
+                        if (localidad != '0' && localidad != '') {
+                            console.log("Localidad seleccionada");
+                            $("#uniform-localidad").removeClass("incompleto");
+                        } else {
+                            /*alertify.error("Debe seleccionar una Localidad");*/
+                            $("#uniform-localidad").addClass("incompleto");
+                        };
+                        if ($("#facturaSi").is(':checked')) {
+                            console.log("Cliente quiere factura");
+                            var razonSocial = $("#razonSocial").val();
+                            var direccionFactura = $("#direccionFactura").val();
+                            var rutFactura = $("#RutFactura").val();
+                            var giro = $("#giro").val();
+                            if (razonSocial != '' && direccionFactura != '' && rutFactura != '' && giro != '') {
+                                if (razonSocial != '') {
+                                    $("#razonSocial").removeClass("incompleto");
+                                } else {
+                                    $("#razonSocial").addClass("incompleto");
+                                };
+                                if (direccionFactura != '') {
+                                    $("#direccionFactura").removeClass("incompleto");
+                                } else {
+                                    $("#direccionFactura").addClass("incompleto");
+                                };
+                                if (rutFactura != '') {
+                                    $("#RutFactura").removeClass("incompleto");
+                                } else {
+                                    $("#RutFactura").addClass("incompleto");
+                                };
+                                if (giro != '') {
+                                    $("#giro").removeClass("incompleto");
+                                } else {
+                                    $("#giro").addClass("incompleto");
+                                };
+                                console.log("valido correo de factura");
+                                console.log("Correo de factura validado");
+                                console.log("Envio formulario");
+                                $("input:disabled").removeAttr("disabled");
+                                
+								if ($("#terminos").is(':checked')) {
+									$("#formCompra").submit();
+									} else {
+										swal("","Debes aceptar los términos y condiciones.","warning");
+									}
+								
+                            } else {
+                               swal("","todos los campos de facturación son obligatorios.","warning");
+								/*RESPONSIVE*/
+								if(anchoVentana <= 800){
+									$(".contBotoneraEnvioYPago a").removeClass("activo");
+									$(".contBotoneraEnvioYPago a:nth-child(1)").addClass("activo");
+									$(".contPaso3Movil").fadeOut(100);
+									$("#misDatos").fadeIn(100);
+									$("#facturaMovil").fadeIn(100);
+								}
+								/*RESPONSIVE*/
+                                if (razonSocial != '') {
+                                    $("#razonSocial").removeClass("incompleto");
+                                } else {
+                                    $("#razonSocial").addClass("incompleto");
+                                };
+                                if (direccionFactura != '') {
+                                    $("#direccionFactura").removeClass("incompleto");
+                                } else {
+                                    $("#direccionFactura").addClass("incompleto");
+                                };
+                                if (rutFactura != '') {
+                                    $("#RutFactura").removeClass("incompleto");
+                                } else {
+                                    $("#RutFactura").addClass("incompleto");
+                                };
+                                if (giro != '') {
+                                    $("#giro").removeClass("incompleto");
+                                } else {
+                                    $("#giro").addClass("incompleto");
+                                }
+                            };
+                        } else {
+                            console.log("Cliente quiere Boleta");
+                            console.log("Envio formulario");
+                            $("input:disabled").removeAttr("disabled");
+                            if ($("#terminos").is(':checked')) {
+									$("#formCompra").submit();
+									} else {
+										swal("","Debes aceptar los términos y condiciones.","warning");
+									}
+                        };
+                    } else {
+                        swal("","Debe completar todos los datos de despacho.","warning");
+						
+						/*DATOS RESPONSIVE*/
+						if(anchoVentana <= 800){
+							$(".contBotoneraEnvioYPago a").removeClass("activo");
+							$(".contBotoneraEnvioYPago a:nth-child(2)").addClass("activo");
+							$(".contPaso3Movil").fadeOut(100);
+							$("#retiroDespacho").fadeIn(100);
+						}
+                        /*DATOS RESPONSIVE*/
+						if (direccion != '') {
+                            $("#direccion").removeClass("incompleto");
+                        } else {
+                            $("#direccion").addClass("incompleto");
+                        };
+                        if (quien_recibe != '') {
+                            $("#quien_recibe").removeClass("incompleto");
+                        } else {
+                            $("#quien_recibe").addClass("incompleto");
+                        };
+                        if (region != '' && region != 'Seleccione region' && region != '0') {
+                            console.log("Region seleccionada");
+                            $("#uniform-region").removeClass("incompleto");
+                        } else {
+                            swal("","Debe seleccionar una región.","warning");
+                            $("#uniform-region").addClass("incompleto");
+                        };
+                        if (comuna != '0' && comuna != '') {
+                            console.log("Comuna seleccionada");
+                            $("#uniform-comuna").removeClass("incompleto");
+                        } else {
+                            swal("","Debe seleccionar una comuna.","warning");
+                            $("#uniform-comuna").addClass("incompleto");
+                        };
+                        if (localidad != '0' && localidad != '') {
+                            console.log("Localidad seleccionada");
+                            $("#uniform-localidad").removeClass("incompleto");
+                        } else {
+                            swal("","Debe seleccionar una Localidad.","warning");
+                            $("#uniform-localidad").addClass("incompleto");
+                        };
+                    };
+                } else {
+                    if ($("#tienda1").is(':checked')) {
+                        console.log("retiro en tienda");
+                        var nombreRetiro = $("#nombre_retiro").val();
+                        var apellidosRetiro = $("#apellidos_retiro").val();
+                        var rutRetiro = $("#rut_retiro").val();
+                        var patenteRetiro = $("#patente_retiro").val();
+                        if (nombreRetiro != "" && rutRetiro != "") {
+							/*LOS CAMPOS DE RETIRO ESTAN LLENOS*/
+							} else {
+                            if (nombreRetiro != '') {
+                                $("#nombre_retiro").removeClass("incompleto");
+                            } else {
+                                $("#nombre_retiro").addClass("incompleto");
+                            };
+                            
+                            if (rutRetiro != '') {
+                                $("#rut_retiro").removeClass("incompleto");
+                            } else {
+                                $("#rut_retiro").addClass("incompleto");
+                            };
+							
+							/*asigno funciones para cuando es responsive*/
+                            if(anchoVentana <= 800){
+									$(".contBotoneraEnvioYPago a").removeClass("activo");
+									$(".contBotoneraEnvioYPago a:nth-child(2)").addClass("activo");
+									$(".contPaso3Movil").fadeOut(100);
+									$("#retiroDespacho").fadeIn(100);
+								}
+							
+							/*asigno funciones para cuando es responsive*/
+							
+                            return false
+                        }
+                    }
+                    if ($("#facturaSi").is(':checked')) {
+                        console.log("Cliente quiere factura");
+                        var razonSocial = $("#razonSocial").val();
+                        var direccionFactura = $("#direccionFactura").val();
+                        var rutFactura = $("#RutFactura").val();
+                        var giro = $("#giro").val();
+                        if (razonSocial != '' && direccionFactura != '' && rutFactura != '' && giro != '') {
+                            if (razonSocial != '') {
+                                $("#razonSocial").removeClass("incompleto");
+                            } else {
+                                $("#razonSocial").addClass("incompleto");
+                            };
+                            if (direccionFactura != '') {
+                                $("#direccionFactura").removeClass("incompleto");
+                            } else {
+                                $("#direccionFactura").addClass("incompleto");
+                            };
+                            if (rutFactura != '') {
+                                $("#RutFactura").removeClass("incompleto");
+                            } else {
+                                $("#RutFactura").addClass("incompleto");
+                            };
+                            if (giro != '') {
+                                $("#giro").removeClass("incompleto");
+                            } else {
+                                $("#giro").addClass("incompleto");
+                            }
+                            console.log("Correo de factura validado");
+                            console.log("Envio formulario");
+                            $("input:disabled").removeAttr("disabled");
+                            if ($("#terminos").is(':checked')) {
+									$("#formCompra").submit();
+									} else {
+										swal("","Debes aceptar los términos y condiciones.","warning");
+									}
+									
+                        } else {
+                            swal("","todos los campos de facturación son obligatorios.","warning");
+								/*RESPONSIVE*/
+								if(anchoVentana <= 800){
+									$(".contBotoneraEnvioYPago a").removeClass("activo");
+									$(".contBotoneraEnvioYPago a:nth-child(1)").addClass("activo");
+									$(".contPaso3Movil").fadeOut(100);
+									$("#misDatos").fadeIn(100);
+									$("#facturaMovil").fadeIn(100);
+								}
+								/*RESPONSIVE*/
+                            if (razonSocial != '') {
+                                $("#razonSocial").removeClass("incompleto");
+                            } else {
+                                $("#razonSocial").addClass("incompleto");
+                            };
+                            if (direccionFactura != '') {
+                                $("#direccionFactura").removeClass("incompleto");
+                            } else {
+                                $("#direccionFactura").addClass("incompleto");
+                            };
+                            if (rutFactura != '') {
+                                $("#RutFactura").removeClass("incompleto");
+                            } else {
+                                $("#RutFactura").addClass("incompleto");
+                            };
+                            if (giro != '') {
+                                $("#giro").removeClass("incompleto");
+                            } else {
+                                $("#giro").addClass("incompleto");
+                            }
+                        };
+                    } else {
+                        console.log("Cliente quiere Boleta");
+                        console.log("Envio formulario");
+                        $("input:disabled").removeAttr("disabled");
+                        if ($("#terminos").is(':checked')) {
+							$("#formCompra").submit();
+							} else {
+								swal("","Debes aceptar los términos y condiciones.","warning");
+							}
+                    };
+                };
+            };
+        } else {
+            swal("","Faltan campos por completar.","warning");
+			/*RESPONSIVE*/
+			if(anchoVentana <= 800){
+				$(".contBotoneraEnvioYPago a").removeClass("activo");
+				$(".contBotoneraEnvioYPago a:nth-child(1)").addClass("activo");
+				$(".contPaso3Movil").fadeOut(100);
+				$("#misDatos").fadeIn(100);
+				$("#facturaMovil").fadeIn(100);
+			}
+			/*RESPONSIVE*/
+            if (nombre != '') {
+                $("#nombre").removeClass("incompleto");
+            } else {
+                $("#nombre").addClass("incompleto");
+            };
+            if (email != '') {
+                $("#email").removeClass("incompleto");
+            } else {
+                $("#email").addClass("incompleto");
+            };
+            if (telefono != '') {
+                $("#telefono").removeClass("incompleto");
+            } else {
+                $("#telefono").addClass("incompleto");
+            };
+            if (run != '') {
+                $("#Rut").removeClass("incompleto");
+            } else {
+                $("#Rut").addClass("incompleto");
+            };
+        };
+    });
+});
+
+/*$(document).on('change', function(){
+    var radio = $('input[name="envio"]:checked').val();
+    var retiro;
+    var comuna_id = $('#comuna').val();
+    if (comuna_id == "Seleccione Comuna") {
+        comuna_id = 0;
+    }
+
+    if (radio == 'direccionCliente') {
+        retiro = 0;
+    }else{
+        retiro = 1;
+    }
+
+    console.log(comuna_id + ' --- ' + retiro);
+
+    $("#contDatosCartVariables").load("tienda/carroConDescuento.php?comuna_id="+comuna_id+"&retiro="+retiro);
+})*/

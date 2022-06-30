@@ -1,0 +1,489 @@
+$(function(){
+	
+	 /*Menu responsive */
+	 $('.toggle-btn').click(function(){
+		$('.filter-btn').toggleClass('open');
+	 });
+	
+	 $('.filter-btn a').click(function(){
+		$('.filter-btn').removeClass('open');
+	 });
+	 
+	$('.hamburger').click(function () {
+		$('.hamburger').toggleClass('open');
+		$('.nav').slideToggle(100);
+	});
+	
+	$(".movil").click(function(){
+		$("ul.sub").hide();
+		console.log("sdfsdfsfd");
+		$(this).parent().find("ul.sub").show(100);
+		});
+		
+	$(".btnMostrarResumen").click(function(){
+		$(".cartResumen").slideToggle();
+	});
+	
+	$(".activarFiltros").click(function(){
+		$(".fondoFiltro").fadeIn(100);
+		$(".aside").fadeIn(200);
+	});
+	$(".fondoFiltro").click(function(){
+		$(".fondoFiltro").fadeOut(200);
+		$(".aside").fadeOut(100);
+	});
+	
+	
+	$(".abrirFooter").click(function(){
+		$(".contrespFooter").hide(100);
+		$(this).parent().parent().find(".contrespFooter").show(1000);
+		});
+	 /*Menu responsive */
+	
+	/*Buscador responsive*/ 
+	$('.iconoBuscador').click(function () {
+		$('.buscador').slideToggle();
+	});
+	
+    /*Botonera responsive de identificacion*/
+    $(".contBotonesIdentificacionResponsive a").click(function(){
+			$(".contBotonesIdentificacionResponsive a").removeClass("active");
+			$(this).addClass("active");
+			$(".cont50Identificacion").fadeOut(100);
+			var tabs = $(this).attr("rel");
+			$("#" + tabs).fadeIn(100);
+		});
+    
+    
+    /*BOTONERAS ENVIO Y PAGO RESPONSIVE*/
+	$(".contBotoneraEnvioYPago a").click(function(){
+		$(".contBotoneraEnvioYPago a").removeClass("activo");
+		$(this).addClass("activo");
+		var tab = $(this).attr("rel");
+		$(".contPaso3Movil").fadeOut(100);
+		$("#"+tab).fadeIn(100);
+		if(tab == "misDatos"){
+			$("#facturaMovil").fadeIn(100);
+			}
+		
+		});
+	/*BOTONERAS ENVIO Y PAGO RESPONSIVE*/
+    
+    
+	$('#btnNewsletter').click(function(){
+		var correo = $('#newsletter').val();
+		if(correo.indexOf('@', 0) == -1 || correo.indexOf('.', 0) == -1) {
+            swal({
+			  type: 'error',
+			  text: 'El correo electrónico introducido no es correcto'
+			});
+			return false;
+        } else {
+			$.ajax({
+				url      : "ajax/newsletter.php",
+				type     : "post",
+				async    : true,
+				data 	 : {correo : correo},
+				success  : function(resp){
+					console.log(resp);
+					if(resp == 1){
+						location.href="home?a=1&msje=Correo ingresado exitosamente."
+					}
+					else if(resp == 2){
+						swal({
+						  type: 'error',
+						  text: 'Tu correo ya se encuentra en nuestros registros'
+						});
+					};
+				}
+			});
+		};
+	});
+/*
+Agregar correo al newsletter -------------------------	----------------------	----------------------	
+*/
+	
+
+/*
+GUARDAR NUEVA DIRECCION
+*/
+$("#guardarDireccion").click(function(){
+	var nombre = $("#nombre").val().trim();
+	var region = $("#region").val();
+	var comuna = $("#comuna").val();
+	var localidad = $("#localidad").val();
+	var calle = $("#calle").val().trim();
+	var numero = $("#numero").val();
+	
+	console.log(nombre);
+	if(nombre != "" && region != "" && comuna != "" && localidad != "" && calle != "" && numero != ""){
+		$("#formNuevaDireccion").submit();
+		} else {
+			console.log("Faltan campos por completar.");
+			swal({
+			  type: 'error',
+			  text: 'Faltan campos por completar.'
+			});
+		}
+	
+});
+
+
+/*Eliminar direcciones guardadas*/	
+$(".deleteDireccion").click(function(){
+	var id = $(this).attr("rel");
+	console.log(id);
+	$.ajax({
+		url      : "ajax/eliminaDireccion.php",
+		type     : "post",
+		async    : true,
+		data 	 : {id : id},
+		success  : function(resp){
+			console.log(resp);
+			if(resp == 1){
+				console.log("dirección eliminada");
+				swal({
+					  type: 'success',
+					  text: 'Dirección eliminada.'
+					});
+					$("#dir_"+id).hide(300);
+				
+				} else {
+					console.log("No fue posible eliminar dirección.");
+						swal({
+						  type: 'error',
+						  text: '"No fue posible eliminar dirección.'
+						});
+					}
+		}
+	});
+
+});
+	
+	
+	
+
+	
+	
+
+	
+	
+	/*
+Registro
+*/
+	$("#btnRegistro").click(function(){
+		var nombre = $("#nombre").val();
+		var apellido = $('#apellido').val();
+		var rut = $("#Rut").val();
+		var email = $("#email").val();
+		var clave = $("#clave").val();
+		var clave2 = $("#clave2").val();
+
+		
+		
+		if(nombre != '' && email != '' && clave != '' && clave2 !='' && apellido != ''){
+			if(email.indexOf('@', 0) == -1 || email.indexOf('.', 0) == -1) {
+				/* Correo invalido */
+				$("#email").addClass("campo_vacio");
+				//alertify.error("Email invalido");
+				swal('','Email invalido','error'); 
+			} else {
+				/* Correo valido */
+				if(clave === clave2){
+					/* Envio el formulario */
+					$("#formularioRegistro").submit();
+				} else {
+					/* Claves no coinciden */
+					//alertify.error("Claves no coinciden");
+					swal('','Claves no coinciden','error'); 
+					$("#clave").addClass("campo_vacio");
+					$("#clave2").addClass("campo_vacio");
+				};
+			}; /*Fin validacion email */
+		} else {
+		/* indico que todos los campos deben estar llenos */
+			//alertify.error("Faltan campos por completar");
+			swal('','Faltan campos por completar','error'); 
+			if(nombre == '' ){
+				$("#nombre").addClass("campo_vacio");
+			} else {
+				$("#nombre").removeClass("campo_vacio");
+			};
+
+			if(apellido == '' ){
+				$("#apellido").addClass("campo_vacio");
+			} else {
+				$("#apellido").removeClass("campo_vacio");
+			};
+			
+			if(email == '' ){
+				$("#email").addClass("campo_vacio");
+			} else {
+				$("#email").removeClass("campo_vacio");
+			};
+			
+			if(rut == '' ){
+				$("#Rut").addClass("campo_vacio");
+			} else {
+				$("#Rut").removeClass("campo_vacio");
+			};
+			
+			if(clave == '' ){
+				$("#clave").addClass("campo_vacio");
+			} else {
+				$("#clave").removeClass("campo_vacio");
+			};
+			
+			if(clave2 == '' ){
+				$("#clave2").addClass("campo_vacio");
+			} else {
+				$("#clave2").removeClass("campo_vacio");
+			};
+
+			
+			
+		};
+		
+	});/*fin registro paso 1*/
+	
+	
+	
+	
+	/*Actualizar */
+	$("#btnActualizar").click(function(){
+		var nombre = $("#nombre").val();
+		var apellido = $('#apellido').val();
+		var Rut = $("#Rut").val();
+		var email = $("#email").val();
+		var telefono = $("#telefono").val();
+		var clave = $("#clave").val();
+		var clave2 = $("#clave2").val();
+
+		
+		if(clave == clave2){
+			if(email.indexOf('@', 0) == -1 || email.indexOf('.', 0) == -1) {
+				swal('','Email incorrecto','error'); 
+				} else {
+					$("#formularioActualizar").submit();
+					}
+			
+			} else if(clave == "" && clave2 == ""){
+				if(email.indexOf('@', 0) == -1 || email.indexOf('.', 0) == -1) {
+					swal('','Email incorrecto','error'); 
+					} else {
+						$("#formularioActualizar").submit();
+						}
+			} else {
+					swal('','Claves no coinciden','error'); 
+				}
+				
+	});/*fin actualizar1*/
+	
+	
+	
+	
+	
+	
+	
+	
+	/*Inicio de session*/
+	$("#inicioSesion").click(function(){
+		console.log("entra");
+		var email = $("#email").val();
+		var password = $("#clave").val();
+		
+		
+		if(email != '' && password != ''){
+			if(email.indexOf('@', 0) == -1 || email.indexOf('.', 0) == -1) {
+				/* Correo invalido */
+				$("#email").addClass("campo_vacio");
+				//alertify.error("Email invalido");
+				swal('','Email invalido','error'); 
+			} else {
+				/*envio formulario para log*/
+				$("#formularioLogin").submit();
+			}; /*Fin validacion email */
+		} else {
+		/* indico que todos los campos deben estar llenos */
+			//alertify.error("Faltan campos por completar");
+			swal('','Faltan campos por completar','error'); 
+			if(email == '' ){
+				$("#email").addClass("campo_vacio");
+			} else {
+				$("#email").removeClass("campo_vacio");
+			};
+			
+			if(password == '' ){
+				$("#clave").addClass("campo_vacio");
+			} else {
+				$("#clave").removeClass("campo_vacio");
+			};
+		};
+	});/*fin login*/
+	
+	
+	
+	
+	/*Inicio de session carro de compras*/
+	$("#inicioSesionIdentificacion").click(function(){
+		
+		var email = $("#email").val();
+		var password = $("#clave").val();
+		
+		console.log(password);
+		if(email != '' && password != ''){
+			if(email.indexOf('@', 0) == -1 || email.indexOf('.', 0) == -1) {
+				/* Correo invalido */
+				$("#email").addClass("campo_vacio");
+				swal('','Email invalido','error'); 
+			} else {
+				/*envio formulario para log*/
+				$(".formInicioSesion").submit();
+			}; /*Fin validacion email */
+		} else {
+		/* indico que todos los campos deben estar llenos */
+			swal('','Faltan campos por completar','error'); 
+			if(email == '' ){
+				$("#email").addClass("campo_vacio");
+			} else {
+				$("#email").removeClass("campo_vacio");
+			};
+			
+			if(password == '' ){
+				$("#clave").addClass("campo_vacio");
+			} else {
+				$("#clave").removeClass("campo_vacio");
+			};
+		};
+	});/*fin login*/
+	
+	
+	
+	
+/*Recuperar clave ----------------------------------------------------------------------------------------------------*/
+	$('#recuperarClave').click(function(){
+		//alert("sdfdsf");
+		var correo = $('#email').val();
+		if(correo.indexOf('@', 0) == -1 || correo.indexOf('.', 0) == -1) {
+            swal('','El correo electrónico introducido no es correcto.','error'); 
+			return false;
+        } else {
+			console.log(correo);
+			$("#formRecuperarClave").submit();
+		};
+	});/*fin funcion*/
+/*Recuperar clave ----------------------------------------------------------------------------------------------------*/
+	
+	
+	/* Encvio formulario para crear cuenta a partir de los datos obtenidos de una compra exitosa*/
+	$(".btnCuentaExito").click(function(){
+		$("#crearCuentaDesdeExito").submit();
+		});
+	
+});
+
+
+
+
+
+
+
+	
+	
+	/*
+Validar rut
+*/
+	
+$("#Rut").Rut({
+   on_error: function(){ 
+   				//swal(type:'error', text:'');
+				swal('Error','Rut incorrecto','error'); 
+				$("#Rut").addClass("campo_vacio");
+				$("#Rut").val("");
+			},
+   format_on: 'keyup',
+   on_success: function(){ $("#Rut").removeClass("campo_vacio");} 
+});
+$("#rut_retiro").Rut({
+   on_error: function(){ 
+   				//swal(type:'error', text:'');
+				swal('Error','Rut incorrecto','error'); 
+				$("#Rut").addClass("campo_vacio");
+				$("#Rut").val("");
+			},
+   format_on: 'keyup',
+   on_success: function(){ $("#Rut").removeClass("campo_vacio");} 
+});
+$("#RutFactura").Rut({
+   on_error: function(){ 
+   				alertify.error('El rut ingresado es incorrecto'); 
+				$("#RutFactura").addClass("incompleto");
+				$("#RutFactura").val("");
+			},
+   format_on: 'keyup',
+   on_success: function(){ $("#RutFactura").removeClass("incompleto");} 
+   
+});
+
+$('#spinner').on( "spinstop", function(e){
+	var cant 	= $(this).val();
+	var id 	= $(this).parent().parent().attr('rel');
+
+	$('.precio-ficha').load('ajax/precio_ficha.php?cant='+cant+'&id='+id);
+
+	//console.log('cant: ' + cant + ' id: ' + id);
+});
+
+var popup = setInterval(IsVisible, 3000);
+
+function IsVisible(){
+	if ($('.popup-news').is(':visible')){
+		$(".bg-popup").click(function() {
+			var nombre_popup = $('.bg-popup').attr('data-cliente');
+			$('.bg-popup').fadeOut();
+		    $('.popup-news').fadeOut();
+		    Cookies.set(nombre_popup,'Newsletter (No Suscrito)',{expires: 14});
+		});
+	}
+	clearInterval(popup);
+}
+
+$('.popup-news').click(function (e) {
+    e.stopPropagation();
+});
+$(".popup-news .contenido > .close").on('click', function(e){
+	var nombre_popup = $('.bg-popup').attr('data-cliente');
+	Cookies.set(nombre_popup,'Newsletter (No Suscrito)',{expires: 14});
+	$('.bg-popup').fadeOut();
+    $('.popup-news').fadeOut();
+})
+
+$('#suscribe-newsletter').on('click', function(e){
+
+	e.preventDefault();
+	var nombre = $('#nombre-suscribe').val();
+	var email = $('#email-suscribe').val();
+	var nombre_popup = $('.bg-popup').attr('data-cliente');
+
+	if (nombre.trim() != '' && email.trim() != '') {
+		$.ajax({
+			url: 'ajax/popup.php',
+			type: 'post',
+			data: {nombre: nombre, email: email},
+			beforeSend: function(){
+				$('#suscribe-newsletter').html('ESPERE POR FAVOR...');
+			},
+			success: function(res){
+				Cookies.set(nombre_popup,'Newsletter Suscrito',{expires: 90});
+				$('#suscribe-newsletter').html('SUSCRIBIRME');
+				$('.bg-popup').fadeOut();
+	    		$('.popup-news').fadeOut();
+	    		swal('','Gracias por suscribirte.','success');
+			}
+		})
+	}else{
+		swal('','Debe completar todos los campos', 'error');
+	}
+})
+
+
